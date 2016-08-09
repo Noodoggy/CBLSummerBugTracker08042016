@@ -6,8 +6,12 @@ namespace CBLSummerBugTracker08042016.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
+        [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        public string DisplayName { set; get; }
+        public string PhoneNumber { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -64,6 +68,12 @@ namespace CBLSummerBugTracker08042016.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string DisplayName { set; get; }
+        public string PhoneNumber { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

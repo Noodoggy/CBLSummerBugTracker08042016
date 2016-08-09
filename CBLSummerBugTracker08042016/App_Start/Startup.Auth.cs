@@ -6,6 +6,8 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using CBLSummerBugTracker08042016.Models;
+using Owin.Security.Providers.LinkedIn;
+using static CBLSummerBugTracker08042016.EmailService;
 
 namespace CBLSummerBugTracker08042016
 {
@@ -54,15 +56,22 @@ namespace CBLSummerBugTracker08042016
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+                appId: "126065391169306",
+                appSecret: "c621f7a73824d4990c428bd0b28b9d47"
+            );
+
+
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "443102604584-335ppdbktsoto3ut8feu6i7obnrja91n.apps.googleusercontent.com",
+                ClientSecret = "_yglV9Lk_983K9qe1e0SS4EM"
+            });
+
+            app.UseLinkedInAuthentication(
+               "78sel5pcrcq30g",
+               "dL1xdCThIO6T7vH6");
         }
     }
 }

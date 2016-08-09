@@ -7,6 +7,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CBLSummerBugTracker08042016.Models;
+using static CBLSummerBugTracker08042016.EmailService;
+using System.Net;
+using System.Data.Entity.Infrastructure;
 
 namespace CBLSummerBugTracker08042016.Controllers
 {
@@ -333,7 +336,10 @@ namespace CBLSummerBugTracker08042016.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+
+        
+       
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 

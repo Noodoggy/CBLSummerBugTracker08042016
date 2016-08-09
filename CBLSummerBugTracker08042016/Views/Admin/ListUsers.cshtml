@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.ApplicationUser>
+@{
+    ViewBag.Title = "ListUsers";
+}
+
+<h2>ListUsers</h2>
+
+
+<table class="table">
+    <tr>
+        <td class="col-md-3">
+            <h3>@Html.DisplayNameFor(model => model.FirstName)</h3>
+        </td>
+        <td class="col-md-3">
+            <h3>@Html.DisplayNameFor(model => model.LastName)</h3>
+        </td>
+        <td class="col-md-3">
+            <h3>@Html.DisplayNameFor(model => model.DisplayName)</h3>
+        </td>
+        <td class="col-md-3">
+            <h3>@Html.DisplayNameFor(model => model.Roles)</h3>
+        </td>
+        <td class="col-md-3">
+            <h3>Edit User Roles</h3>
+        </td>
+    </tr>
+</table>
+
+@foreach (var item in Model)
+{
+    <table class="table">
+        <tr>
+            <td class="col-md-3">
+                <h4>@Html.DisplayFor(model => item.FirstName)</h4>
+            </td>
+            <td class="col-md-3">
+                <h4>@Html.DisplayFor(model => item.LastName)</h4>
+            </td>
+            <td class="col-md-3">
+                <h4>@Html.DisplayFor(model => item.DisplayName)</h4>
+            </td>
+            <td class="col-md-3">
+                <h4>@Html.DisplayFor(model => item.Roles)</h4>
+            </td>
+            <td class="col-md-3">
+                <h4>@Html.ActionLink("Edit User Roles", "EditUser", new { id = item.Id })</h4>
+            </td>
+        </tr>
+    </table>
+
+}
+<i class="fa fa-folder-open"></i><i class="fa  fa-pencil"></i><b>@Html.ActionLink("Administrator Dashboard", "Index", "Admin")</b>

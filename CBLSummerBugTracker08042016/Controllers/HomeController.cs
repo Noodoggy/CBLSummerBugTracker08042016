@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace CBLSummerBugTracker08042016.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         public ActionResult Index()

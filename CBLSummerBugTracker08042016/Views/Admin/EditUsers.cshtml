@@ -1,0 +1,29 @@
+﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.AdminUserViewModel
+
+@{
+    ViewBag.Title = "EditUser";
+}
+
+<h2>EditUser</h2>
+@using (Html.BeginForm("EditUser", "Admin", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-4">@Model.Name</div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+
+                    @Html.ListBox("selected", Model.roles)
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Assign To Role" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4>@Html.ActionLink("List User Roles", "ListUsers")</h4>
+    </div>
+}
