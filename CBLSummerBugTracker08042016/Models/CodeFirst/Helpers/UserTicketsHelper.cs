@@ -51,11 +51,11 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
     public IList<int> ListUserAssignedTickets(string userId)
     {
-        UserTicketsHelper helper = new UserTicketsHelper(db);                                       //assign helper to db
+                                         
         var ut = new TicketsAssignedListViewModel();                                    //use view model for data to display
         IList<int> userAssignedTickets = new List<int>();                       //new list to hold tickets assigned to user 
-        var tic = db.Tickets;                                                                           //access tickets db
-        foreach (var item in tic)
+                                                                                //access tickets db
+        foreach (var item in db.Tickets)
             if (IsUserAssignedTicket(userId, item.Id))                                  //use helper to check if on ticket
             {
                 ut.Id = item.Id;
@@ -69,11 +69,9 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
     public void AddUserToTicket(string userId, int ticketId)
     {
         ApplicationUser user = db.Users.Find(userId);                                                               //find user
-        Ticket ticket = db.Tickets.First(p => p.Id == ticketId);                                                //select ticket
-        
-        UserTicketsHelper userToAssign = new UserTicketsHelper(db);                                 //helper to access database
+        Ticket ticket = db.Tickets.Find(ticketId);                                                //select ticket
 
-        if (!userToAssign.IsUserAssignedTicket(user.Id, ticket.Id))                                     //if user is not on ticket
+        if (!IsUserAssignedTicket(user.Id, ticket.Id))                                     //if user is not on ticket
         {
             ticket.AssignedToUserId = user.Id;                                                      //add to ticket, else do nothing
             db.SaveChanges();

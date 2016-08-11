@@ -84,6 +84,36 @@ namespace CBLSummerBugTracker08042016.Migrations
                 userId = userManager.FindByEmail("moderator@coderfoundry.com").Id;
                 userManager.AddToRole(userId, "Project Manager");
             }
-        }
+
+            context.TicketPriorities.AddOrUpdate(
+                  p => p.Name,
+                  new Models.CodeFirst.TicketPriority { Name = "Blocker" },
+                  new Models.CodeFirst.TicketPriority { Name = "Critical" },
+                  new Models.CodeFirst.TicketPriority { Name = "Major" },
+                  new Models.CodeFirst.TicketPriority { Name = "Minor" },
+                  new Models.CodeFirst.TicketPriority { Name = "Trivial" }
+                );
+
+            context.TicketTypes.AddOrUpdate(
+                  p => p.Name,
+                  new Models.CodeFirst.TicketType { Name = "User Interface Defects" },
+                  new Models.CodeFirst.TicketType { Name = "Boundary Related Defects" },
+                  new Models.CodeFirst.TicketType { Name = "Error Handling Defects" },
+                  new Models.CodeFirst.TicketType { Name = "Improper Service Levels(Control flow defects)" },
+                  new Models.CodeFirst.TicketType { Name = "Interpreting Data Defects" },
+                  new Models.CodeFirst.TicketType { Name = "Race Conditions(Compatibility and Intersystem defects)" },
+                  new Models.CodeFirst.TicketType { Name = "Load Conditions(Memory Leakages under load)" },
+                  new Models.CodeFirst.TicketType { Name = "Hardware Failures" }
+                );
+
+            context.TicketStatuses.AddOrUpdate(
+                  p => p.Name,
+                  new Models.CodeFirst.TicketStatus { Name = "Pending" },
+                  new Models.CodeFirst.TicketStatus { Name = "Open" },
+                  new Models.CodeFirst.TicketStatus { Name = "Resolved" }
+
+                );
+
+        }  
     }
 }

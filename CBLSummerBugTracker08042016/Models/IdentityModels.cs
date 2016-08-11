@@ -23,8 +23,8 @@ namespace CBLSummerBugTracker08042016.Models
             this.TicketComment = new HashSet<TicketComment>();                              //to access all comments by user
             this.TicketAttachment = new HashSet<TicketAttachment>();                        //to access all attachments by user
             this.TicketHistory = new HashSet<TicketHistory>();                              //to access all ticket history by user
-            this.Project = new HashSet<Project>();                                          //to access all projects by user
-            
+            this.Project = new HashSet<Project>();                                  //to access all projects by user
+                        
         }
 
         public virtual ICollection<Project> Project { get; set; }                               //navigation properties
@@ -69,6 +69,7 @@ namespace CBLSummerBugTracker08042016.Models
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<Project> Projects { get; set; }
+
 
         //public System.Data.Entity.DbSet<CBLSummerBugTracker08042016.Models.ApplicationUser> ApplicationUsers { get; set; }
     }

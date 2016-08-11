@@ -2,7 +2,9 @@
 using CBLSummerBugTracker08042016.Models.CodeFirst;
 using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -23,7 +25,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             return View(users);
         }
 
-        public ActionResult EditUser(string id)
+        public ActionResult EditUsers(string id)
         {
             var user = db.Users.Find(id);                                                   //find user by id
             UserRolesHelper helper = new UserRolesHelper();                                     //instantiate helper
@@ -36,7 +38,7 @@ namespace CBLSummerBugTracker08042016.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditUser([Bind(Include = "selected, Id")] AdminUserViewModel model)
+        public ActionResult EditUsers([Bind(Include = "selected, Id")] AdminUserViewModel model)
         {
             var roleManager = new UserRolesHelper();                                        //UserRolesHelper
             var user = model.Id;                                                            //user id
@@ -73,7 +75,7 @@ namespace CBLSummerBugTracker08042016.Controllers
 
             };
 
-
+            model.Name = db.Users.Find(user).DisplayName;                                   //show DisplayName instead of userId
             model.roles = new MultiSelectList(db.Roles, "Name", "Name", roleManager.ListUserRoles(user).ToArray());  //refreshed selectlist
             return View(model);
         }
@@ -82,7 +84,10 @@ namespace CBLSummerBugTracker08042016.Controllers
         public ActionResult ListUsers()
         {
             var users = db.Users.ToList();
-            return View(users);
+            
+
+            return View(users);                
+
         }
 
 

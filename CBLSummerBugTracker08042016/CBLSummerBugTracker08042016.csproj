@@ -221,6 +221,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
+    <Compile Include="Controllers\TicketAttachmentsController.cs" />
+    <Compile Include="Controllers\TicketCommentsController.cs" />
+    <Compile Include="Controllers\TicketHistoriesController.cs" />
+    <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -230,6 +234,8 @@
     <Compile Include="Models\CodeFirst\Helpers\UserProjectsHelper.cs" />
     <Compile Include="Models\CodeFirst\Helpers\UserRolesHelper.cs" />
     <Compile Include="Models\CodeFirst\Helpers\UserTicketsHelper.cs" />
+    <Compile Include="Models\CodeFirst\ImageUploadValidator.cs" />
+    <Compile Include="Models\CodeFirst\ListUserViewModel.cs" />
     <Compile Include="Models\CodeFirst\ProjectModel.cs" />
     <Compile Include="Models\CodeFirst\ProjectUserListViewModel.cs" />
     <Compile Include="Models\CodeFirst\TicketAttachmentModel.cs" />
@@ -241,6 +247,7 @@
     <Compile Include="Models\CodeFirst\TicketPriorityModel.cs" />
     <Compile Include="Models\CodeFirst\TicketStatusModel.cs" />
     <Compile Include="Models\CodeFirst\TicketTypeModel.cs" />
+    <Compile Include="Models\CodeFirst\TicketViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\CodeFirst\TicketsAssignedListViewModel.cs" />
@@ -313,14 +320,38 @@
     <Content Include="Views\Projects\Details.cshtml" />
     <Content Include="Views\Projects\Edit.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
-    <Content Include="Views\Projects\EditAssignedUsers.cshtml" />
+    <Content Include="Views\Projects\EditAssignedProjectUsers.cshtml" />
     <Content Include="Views\Admin\EditUsers.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\ListUsers.cshtml" />
     <Content Include="Views\Manage\ChangeInfo.cshtml" />
+    <Content Include="Views\Tickets\Index.cshtml" />
+    <Content Include="Views\Tickets\AssignedTickets.cshtml" />
+    <Content Include="Views\Tickets\Create.cshtml" />
+    <Content Include="Views\Tickets\Delete.cshtml" />
+    <Content Include="Views\Tickets\Details.cshtml" />
+    <Content Include="Views\Tickets\Edit.cshtml" />
+    <Content Include="Views\Tickets\MyProjectTickets.cshtml" />
+    <Content Include="Views\Tickets\MyTickets.cshtml" />
+    <Content Include="Views\TicketComments\Create.cshtml" />
+    <Content Include="Views\TicketComments\Delete.cshtml" />
+    <Content Include="Views\TicketComments\Details.cshtml" />
+    <Content Include="Views\TicketComments\Edit.cshtml" />
+    <Content Include="Views\TicketComments\Index.cshtml" />
+    <Content Include="Views\TicketAttachments\Create.cshtml" />
+    <Content Include="Views\TicketAttachments\Delete.cshtml" />
+    <Content Include="Views\TicketAttachments\Details.cshtml" />
+    <Content Include="Views\TicketAttachments\Edit.cshtml" />
+    <Content Include="Views\TicketAttachments\Index.cshtml" />
+    <Content Include="Views\TicketHistories\Create.cshtml" />
+    <Content Include="Views\TicketHistories\Delete.cshtml" />
+    <Content Include="Views\TicketHistories\Details.cshtml" />
+    <Content Include="Views\TicketHistories\Edit.cshtml" />
+    <Content Include="Views\TicketHistories\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="img\attachments\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -1,0 +1,320 @@
+﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.Ticket
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Tickets</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketPriority)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketPriority)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketStatus.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Created.LocalDateTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerUserId)
+        </dt>
+
+        <dd>
+            @Html.HiddenFor(model => model.OwnerUser)
+            @Html.DisplayFor(model => model.OwnerUser.DisplayName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AssignedToUserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
+        </dd>
+
+    </dl>
+</div>
+
+
+
+
+@if (Request.IsAuthenticated)
+            {
+                using (Html.BeginForm("Create", "TicketComments", FormMethod.Post))
+                {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="TicketId" value="@Model.Id" />
+                <div class="col-sm-7 col-lg-offset-1">
+                    <div class="row">
+                        <div class="form-group panel panel-white post panel-shadow">
+                            <label class="sr-only" for="Comment">Comments:</label>
+                            <input type="text" id="comment" class="form-control input-lg" name="Comment" placeholder="Leave a comment here..." required />
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg panel-shadow" id="submit-button">
+                    <i class="fade loading-icon"></i> <span>Submit Comment</span>
+                </button>
+    }
+}
+else
+{
+    @Html.ActionLink("     Log in to comment", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+
+
+
+}
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="TicketId" value="@Model.Id" />
+        <div class="col-sm-7 col-lg-offset-1">
+            <div class="row">
+                <div class="form-group panel panel-white post panel-shadow">
+                    <label class="sr-only" for="Comment">Attachments:</label>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            <<input type="text" name="description" class="form-control" />
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger",  })
+                        </div>
+                    </div>
+                    <<input type="file" name="image" class="form-control" id="fileUpload" />
+                </div>
+            </div>
+        </div>
+                <button type="submit" value="Create" class="btn btn-primary btn-lg panel-shadow" id="submit-button">
+                    <i class="fade loading-icon"></i> <span>Submit Attachment</span>
+                </button>
+
+    }
+}
+else
+{
+    @Html.ActionLink("     Log in to comment", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+
+
+
+}
+<div class="row">
+    <div class="col-lg-1">
+        @*no offset col for some reason???*@
+    </div>
+    <div class="col-xs-5">
+        @foreach (var his in Model.TicketHistory.OrderByDescending(p => p.Changed))
+        {
+
+
+            <div class="row">
+                <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
+                    <div class="panel panel-white post panel-shadow">
+                        <div class="post-heading">
+                            <div class="pull-left image">
+                                <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+                            </div>
+                            <div class="pull-left meta">
+                                <div class="title h5">
+                                    <h4>
+                                        @his.Changed
+                                        @his.Property
+                                        @his.OldValue
+                                        @his.NewValue
+
+                                        <small>
+                                            @Html.Raw(his.User.DisplayName)
+                                        </small>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <div class="col-xs-5">
+        <div>
+            @foreach (var com in Model.TicketComment.OrderByDescending(p => p.Created))
+            {
+
+
+                <div class="row">
+                    <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
+                        <div class="panel panel-white post panel-shadow">
+                            <div class="post-heading">
+                                <div class="pull-left image">
+                                    <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+                                </div>
+                                <div class="pull-left meta">
+                                    <div class="title h5">
+                                        <h4>
+                                            @Html.Raw(com.User.DisplayName)
+                                            <small>
+
+
+                                                @com.Created.LocalDateTime;
+
+
+                                                @*@if (User.Identity.Name == com.UserId)                //commented out for clarification on user rights
+                                                    {
+                                                        @Html.ActionLink("       Edit  ", "EditComment", new { Id = com.Id })
+                                                    }*@
+
+                                                @if (User.IsInRole("Admin") @*|| User.IsInRole("Project") || (User.Identity.Name == com.User.Email)*@)
+                                                {
+                                                    @Html.ActionLink("     Delete", "DeleteComment", new { Id = com.Id })
+                                                }
+
+
+                                            </small>
+
+
+                                        </h4>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="post-description">
+                                <h3>@com.Comment</h3>
+                                <br />
+
+                            </div>
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                                @Html.ActionLink("Back to List", "Index")
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div>
+            @foreach (var att in Model.TicketAttachment.OrderByDescending(p => p.Created))
+            {
+
+
+                <div class="row">
+                    <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
+                        <div class="panel panel-white post panel-shadow">
+                            <div class="post-heading">
+                                <div class="pull-left image">
+                                    <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+                                </div>
+                                <div class="pull-left meta">
+                                    <div class="title h5">
+                                        <h4>
+                                            @Html.Raw(att.User.DisplayName)
+                                            <small>
+
+
+                                                @att.Created.LocalDateTime;
+                                                @att.Description;
+                                                @if (att.FilePath != null)
+                                                {
+                                                    <img class="img-responsive panel-shadow" src="@Url.Content(att.FilePath)" alt="" />
+                                                }
+
+
+
+                                                @*@if (User.Identity.Name == com.UserId)                //commented out for clarification on user rights
+                                                    {
+                                                        @Html.ActionLink("       Edit  ", "EditComment", new { Id = com.Id })
+                                                    }*@
+
+                                                @if (User.IsInRole("Admin") @*|| User.IsInRole("Project") || (User.Identity.Name == com.User.Email)*@)
+                                                {
+                                                    @Html.ActionLink("     Delete", "DeleteComment", new { Id = att.Id })
+                                                }
+
+
+                                            </small>
+
+
+                                        </h4>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="post-description">
+
+                                <br />
+
+                            </div>
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                                @Html.ActionLink("Back to List", "Index")
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
