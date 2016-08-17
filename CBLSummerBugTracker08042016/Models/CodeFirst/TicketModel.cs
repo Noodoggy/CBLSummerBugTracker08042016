@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace CBLSummerBugTracker08042016.Models.CodeFirst
 {
-    public class Ticket
-    {
-
+    public class Ticket 
+    { 
         public Ticket()
         {
             this.TicketComment = new HashSet<TicketComment>();//to access all ticket comments by ticket using LINQ
@@ -41,5 +41,10 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst
         public virtual ICollection<TicketAttachment> TicketAttachment { get; set; }
         public virtual ICollection<TicketHistory> TicketHistory { get; set; }
         public virtual ICollection<TicketNotification> TicketNotification { get; set; }
+
+        internal object GetString(object item)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

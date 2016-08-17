@@ -15,7 +15,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.TicketPriority)
+            @Html.DisplayFor(model => model.TicketPriority.Name)
         </dd>
 
         <dt>
@@ -67,7 +67,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.OwnerUserId)
+            @Html.DisplayNameFor(model => model.OwnerUser)
         </dt>
 
         <dd>
@@ -76,15 +76,15 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ProjectId)
+            @Html.DisplayNameFor(model => model.Project)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ProjectId)
+            @Html.DisplayFor(model => model.Project.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AssignedToUserId)
+            @Html.DisplayNameFor(model => model.AssignedToUser)
         </dt>
 
         <dd>
@@ -132,15 +132,15 @@ else
         <div class="col-sm-7 col-lg-offset-1">
             <div class="row">
                 <div class="form-group panel panel-white post panel-shadow">
-                    <label class="sr-only" for="Comment">Attachments:</label>
+                    <label class="sr-only" for="Attachments">Attachments:</label>
                     <div class="form-group">
                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            <<input type="text" name="description" class="form-control" />
+                            <input type="text" name="description" class="form-control" />
                             @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger",  })
                         </div>
                     </div>
-                    <<input type="file" name="image" class="form-control" id="fileUpload" />
+                    <input type="file" name="image" class="form-control" id="fileUpload" />
                 </div>
             </div>
         </div>
@@ -176,14 +176,15 @@ else
                             <div class="pull-left meta">
                                 <div class="title h5">
                                     <h4>
-                                        @his.Changed
-                                        @his.Property
-                                        @his.OldValue
-                                        @his.NewValue
-
+                                        At @his.Changed
                                         <small>
                                             @Html.Raw(his.User.DisplayName)
-                                        </small>
+                                        </small> has changed 
+                                        @his.Property from 
+                                        @his.OldValue to
+                                        @his.NewValue
+
+                                        
                                     </h4>
                                 </div>
                             </div>

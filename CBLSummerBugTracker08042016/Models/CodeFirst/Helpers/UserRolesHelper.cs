@@ -11,7 +11,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserManager<ApplicationUser> manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-        
+
 
         //public UserRolesHelper(ApplicationDbContext context)
         //{
@@ -25,7 +25,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
             return manager.IsInRole(userId, roleName);
         }
 
-        public IList<string> ListUserRoles(string userId)
+        public ICollection<string> ListUserRoles(string userId)
         {
             return manager.GetRoles(userId);
         }

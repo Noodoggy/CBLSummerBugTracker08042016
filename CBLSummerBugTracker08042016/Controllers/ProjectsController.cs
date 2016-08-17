@@ -25,16 +25,21 @@ namespace CBLSummerBugTracker08042016.Controllers
         public ActionResult Index()
         {
             UserRolesHelper helper = new UserRolesHelper();
-            var currentUser = db.Users.Find(System.Web.HttpContext.Current.User.Identity.GetUserId());          //get current user id
+            var currentUser = db.Users.Find(System.Web.HttpContext.Current.User.Identity.GetUserId());      //get current user id
+            var projectList = new List<Project>();
+           
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))                                   
             {
                 ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");                      //if admin, allow all projects 
+
+                projectList = db.Projects.ToList();
             }
             else
             {
                 ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");              //else, only projects assigned to
+                projectList = currentUser.Project.ToList();
             }
-            return View(db.Projects.ToList());
+            return View(projectList);
         }
 
 
@@ -168,7 +173,7 @@ namespace CBLSummerBugTracker08042016.Controllers
     public ActionResult EditAssignedProjectUsers(int Id)
     {
         var project = db.Projects.Find(Id);                                             //find project by id
-        UserProjectsHelper helper = new UserProjectsHelper(db);                         //helper that can be used locally
+        UserProjectsHelper helper = new UserProjectsHelper();                         //helper that can be used locally
         var model = new ProjectUserListViewModel();                                     //use model to render in view
         model.ProjectName = project.Name;                                               //insert project data
         model.Id = project.Id;                                                           //insert project id
@@ -186,8 +191,8 @@ namespace CBLSummerBugTracker08042016.Controllers
     [HttpPost]
     public ActionResult EditAssignedProjectUsers([Bind(Include = "ProjectName, selected, Id, users")] ProjectUserListViewModel model)
     {
-       
-        UserProjectsHelper helper = new UserProjectsHelper(db);                                                    
+        UserRolesHelper roles = new UserRolesHelper();
+        UserProjectsHelper helper = new UserProjectsHelper();                                                    
         List<string> ListSelected = new List<string>();                                       //selected list of users to assign
         List<string> ListToRemove = new List<string>(helper.ListProjectUsers(model.Id).ToArray());          //creates list of users assigned in Get Action 
 
@@ -204,11 +209,15 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         foreach (var item in ListSelected)                                          //action of adding to list
             {
-            if (!helper.IsUserOnProject(item, model.Id))                            //check to make sure not already assigned to project
-            {
-                helper.AddUserToProject(item, model.Id);                             //add
+                if (!helper.IsUserOnProject(item, model.Id))                            //check to make sure not already assigned to project
+                {
+                    helper.AddUserToProject(item, model.Id);                             //add
+                    if (!roles.IsUserInRole(item, "Submitter"))
+                        {
+                            roles.AddUserToRole(item, "Submitter");
+                        }
+                }
             }
-        }
 
         foreach (var item in ListToRemove)                                          //action of removing from list
         {

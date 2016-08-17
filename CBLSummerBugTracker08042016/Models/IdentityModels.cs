@@ -23,7 +23,7 @@ namespace CBLSummerBugTracker08042016.Models
             this.TicketComment = new HashSet<TicketComment>();                              //to access all comments by user
             this.TicketAttachment = new HashSet<TicketAttachment>();                        //to access all attachments by user
             this.TicketHistory = new HashSet<TicketHistory>();                              //to access all ticket history by user
-            this.Project = new HashSet<Project>();                                  //to access all projects by user
+            this.Project = new HashSet<Project>();                                          //to access all projects by user
                         
         }
 
@@ -32,6 +32,7 @@ namespace CBLSummerBugTracker08042016.Models
         public virtual ICollection<TicketAttachment> TicketAttachment { get; set; }
         public virtual ICollection<TicketHistory> TicketHistory { get; set; }
         public virtual ICollection<TicketNotification> TicketNotification { get; set; }
+        
         
         
         

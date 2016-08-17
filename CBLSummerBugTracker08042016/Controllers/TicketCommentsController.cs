@@ -5,18 +5,19 @@ using System.Linq;
 using System.Web.Mvc;
 
 using System.Data.Entity;
-
 using System.Net;
-
 using CBLSummerBugTracker08042016.Models;
-using Microsoft.AspNet.Identity;
 using CBLSummerBugTracker08042016.Models.CodeFirst;
+using Microsoft.AspNet.Identity;
+using System.Configuration;
+using SendGrid;
+using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers;
 
 namespace CBLSummerBugTracker08042016.Controllers
 {
- 
-    
-        public class TicketCommentsController : Controller
+
+
+    public class TicketCommentsController : Controller
         {
             private ApplicationDbContext db = new ApplicationDbContext();
 
@@ -58,22 +59,57 @@ namespace CBLSummerBugTracker08042016.Controllers
             // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
             [ValidateAntiForgeryToken]
+
             public ActionResult Create([Bind(Include = "Id,Comment,Created,TicketId,UserId")] TicketComment ticketComments)
             {
 
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                UserRolesHelper helper = new UserRolesHelper();
+                UserProjectsHelper helper2 = new UserProjectsHelper();
+                var transportWeb = new Web(ConfigurationManager.AppSettings["SendGridAPIKey"]);
+                var notification = new IdentityMessage();
+                var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var currentUser = db.Users.Find(currentUserId);
+                var ticket = db.Tickets.Find(ticketComments.TicketId);
+                if ((ticket.OwnerUserId == currentUserId)                   //check for owneruser
+               || (ticket.AssignedToUserId == currentUserId)               //check for assigned user
+               || (helper2.IsUserOnProject(currentUserId, ticket.ProjectId))           //check for user assigned to project, thus ticket
+               || (helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))           //check for admin
                 {
-                    var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                    var currentUser = db.Users.Find(currentUserId);
                     ViewBag.UserId = currentUser;
                     ticketComments.UserId = currentUserId;
                     ticketComments.Created = DateTime.Now.ToLocalTime();
                     ticketComments.User = currentUser;
                     db.TicketComments.Add(ticketComments);
+
+                    var changed = DateTime.Now;
+                    TicketHistory thcom = new TicketHistory
+                    {
+                        TicketId = ticketComments.TicketId,
+                        Property = "Comments",
+                        OldValue = "",
+                        NewValue = currentUser.DisplayName + " has added a new comment.",
+                        Changed = changed,
+                        UserId = currentUserId,
+
+                        User = currentUser,                            //this is for use in notification message
+                    };
+
+                    notification.Body = currentUser.DisplayName + " has added a new comment.";
+                    SendGridMessage mymessage = new SendGridMessage();
+                    mymessage.Html = notification.Body;
+                    transportWeb.DeliverAsync(mymessage);
+                    db.TicketHistories.Add(thcom);
+
+
+
+
                     db.SaveChanges();
                     return RedirectToAction("Details", "Tickets", new { id = ticketComments.TicketId });
                 }
 
+            }
                 ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketComments.TicketId);
 
                 return View(ticketComments);
@@ -101,18 +137,51 @@ namespace CBLSummerBugTracker08042016.Controllers
             // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public ActionResult Edit([Bind(Include = "Id,Comment,Created,TicketId,UserId")] TicketComment ticketComments)
+            public ActionResult Edit([Bind(Include = "Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment)
             {
                 if (ModelState.IsValid)
                 {
 
-                    db.Entry(ticketComments).State = EntityState.Modified;
+                var oldticketComment = db.TicketComments.AsNoTracking().FirstOrDefault(t => t.Id == ticketComment.Id);
+                var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                var currentUser = db.Users.Find(currentUserId);
+                var notification = new IdentityMessage();
+                var changed = DateTime.Now;
+                var transportWeb = new Web(ConfigurationManager.AppSettings["SendGridAPIKey"]);
+                TicketHistory thcom = new TicketHistory
+                {
+                    TicketId = ticketComment.TicketId,
+                    Property = "Comments",
+                    OldValue = oldticketComment.Comment,
+                    NewValue = ticketComment.Comment,
+                    Changed = changed,
+                    UserId = currentUserId,
+
+                    User = currentUser,                            //this is for use in notification message
+                };
+
+                notification.Body = currentUser.DisplayName + " has edited a comment.";
+                SendGridMessage mymessage = new SendGridMessage();
+                mymessage.Html = notification.Body;
+                transportWeb.DeliverAsync(mymessage);
+                db.TicketHistories.Add(thcom);
+
+
+
+
+
+
+
+                db.Entry(ticketComment).State = EntityState.Modified;
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketComments.TicketId);
 
-                return View(ticketComments);
+
+
+                ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketComment.TicketId);
+
+                return View(ticketComment);
             }
 
             // GET: TicketComments/Delete/5

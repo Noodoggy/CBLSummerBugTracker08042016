@@ -14,19 +14,19 @@
     @Html.ActionLink("My Project Tickets", "MyProjectTickets")
 
 </p>
-@if (User.IsInRole("Admin"))
-{
+@*@if (User.IsInRole("Admin"))
+{*@
     <table class="table" id="ticket_table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.TicketPriority.Name)
+                    @Html.DisplayNameFor(model => model.TicketPriority)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.TicketStatus.Name)
+                    @Html.DisplayNameFor(model => model.TicketStatus)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.TicketType.Name)
+                    @Html.DisplayNameFor(model => model.TicketType)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Created)
@@ -80,7 +80,7 @@
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td>
-                        @Html.HiddenFor(model => item.OwnerUserId)
+                        @Html.HiddenFor(modelItem => item.OwnerUserId)
                         @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
                     </td>
                     <td>
@@ -89,21 +89,20 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
                     </td>
+                    <td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                        {
 
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                        </td>
-                    }
-
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) @:|
+                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                        }
+                             
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-}
+@*}*@
 
 
 <!--jQuery-->

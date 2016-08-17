@@ -9,12 +9,12 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 {
     public class UserProjectsHelper
     {
-        private ApplicationDbContext db;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
-        public UserProjectsHelper(ApplicationDbContext db)
-        {
-            this.db = db;//allow operations on database
-        }
+        //public UserProjectsHelper()
+        ////{
+        ////    this.db = db;//allow operations on database
+        ////}
 
         public bool IsUserOnProject(string userId, int projectId)
         {

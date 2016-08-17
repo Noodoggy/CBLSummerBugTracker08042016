@@ -8,7 +8,10 @@
 <h2>MyTickets</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create")|
+    @Html.ActionLink("My Tickets", "MyTickets") |
+    @Html.ActionLink("Assigned Tickets", "AssignedTickets") |
+    @Html.ActionLink("My Project Tickets", "MyProjectTickets")
 </p>
 <table class="table" id="ticket_table">
     <thead>
@@ -38,10 +41,10 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProjectId)
+                @Html.DisplayNameFor(model => model.Project)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AssignedToUserId)
+                @Html.DisplayNameFor(model => model.AssignedToUser)
             </th>
             <th></th>
         </tr>
@@ -76,7 +79,7 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectId)
+                    @Html.DisplayFor(modelItem => item.Project.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)

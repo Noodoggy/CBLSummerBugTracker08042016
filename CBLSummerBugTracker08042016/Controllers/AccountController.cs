@@ -156,6 +156,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, DisplayName = model.DisplayName, PhoneNumber = model.PhoneNumber};
+                if (model.DisplayName == null) { model.DisplayName = model.FirstName; }
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

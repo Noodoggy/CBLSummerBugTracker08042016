@@ -1,0 +1,129 @@
+﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.UsersByRoleViewModel
+@{
+    ViewBag.Title = "ListUsersByRole";
+}
+
+<!--CSS-->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />
+
+<h2>ListUsersByRole</h2>
+
+<table class="table" id="ticket_table">
+    <thead>
+
+        @foreach (var role in Model.Roles)
+            {
+            <colgroup rowspan="@(Model.PM.Count > Model.Dev.Count && Model.PM.Count > Model.Sub.Count ? Model.PM.Count : Model.Dev.Count > Model.Sub.Count ? Model.Dev.Count : Model.Sub.Count)">
+                <div class="col-md-3">
+                    @role
+                </div>
+            </colgroup>
+        }
+    </thead>
+
+
+
+
+    <tbody>
+
+        <table class="container">
+            <tr>
+            
+                <td>
+                    <table class="col-md-3 table" id="ticket_table">
+                        <thead></thead>
+                        <tbody>
+                            @foreach (var user in Model.Admin)
+                            {
+
+                                <tr>
+                                    <td>
+                                        <div style="width: 260px">
+                                            @user.DisplayName
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </td>
+            
+                <td>
+                    <table class="col-md-3 table" id="ticket_table">
+                        <thead></thead>
+                        <tbody>
+                            @foreach (var user in Model.PM)
+            {
+                                <tr>
+
+
+                                    <td>
+                                        <div style="width: 100%">
+                                            @user.DisplayName
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            
+                <td>
+                    <table class="col-md-3 table" id="ticket_table">
+                        <thead></thead>
+                        <tbody>
+                            @foreach (var user in Model.Dev)
+            {
+                                <tr>
+
+                                    <td>
+                                        <div style="width: 100%">
+                                            @user.DisplayName
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            
+                <td>
+                    <table class="col-md-3 table" id="ticket_table">
+                        <thead></thead>
+                        <tbody>
+                            @foreach (var user in Model.Sub)
+            {
+                                <tr>
+
+
+                                    <td>
+                                        <div style="width: 100%">
+                                            @user.DisplayName
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            
+            </tr>
+
+            </table>
+</tbody>
+</table>
+
+
+
+<!--jQuery-->
+<script type = "text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+@*@Scripts.Render("~/bundles/jquery")*@
+
+<!--DataTables-->
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+
+
+<script>
+    $('#ticket_table').DataTable();
+</script>

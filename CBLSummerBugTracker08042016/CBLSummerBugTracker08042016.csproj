@@ -248,6 +248,8 @@
     <Compile Include="Models\CodeFirst\TicketStatusModel.cs" />
     <Compile Include="Models\CodeFirst\TicketTypeModel.cs" />
     <Compile Include="Models\CodeFirst\TicketViewModel.cs" />
+    <Compile Include="Models\CodeFirst\UserRolesModel.cs" />
+    <Compile Include="Models\CodeFirst\UsersByRoleViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\CodeFirst\TicketsAssignedListViewModel.cs" />
@@ -348,6 +350,7 @@
     <Content Include="Views\TicketHistories\Details.cshtml" />
     <Content Include="Views\TicketHistories\Edit.cshtml" />
     <Content Include="Views\TicketHistories\Index.cshtml" />
+    <Content Include="Views\Admin\ListUsersByRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

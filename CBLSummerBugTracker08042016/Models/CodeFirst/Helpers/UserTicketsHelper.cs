@@ -7,13 +7,13 @@ using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers;
 namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 {
     public class UserTicketsHelper
-    { 
-    private ApplicationDbContext db;
+    {
+        private ApplicationDbContext db = new ApplicationDbContext();
 
-        public UserTicketsHelper(ApplicationDbContext db)
-        {
-            this.db = db;                                                                   //allow operations on database
-        }
+        //public UserTicketsHelper(ApplicationDbContext db)
+        //{
+        //    this.db = db;                                                                   //allow operations on database
+        //}
 
 
         public bool IsUserOwnedTicket(string userId, int ticketId)
@@ -27,7 +27,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
         public bool IsUserAssignedTicket(string userId, int ticketId)
         {
-            Ticket isAssignedToTicket = db.Tickets.FirstOrDefault(p => p.Id == ticketId);                   //find ticket
+            Ticket isAssignedToTicket = db.Tickets.AsNoTracking().FirstOrDefault(p => p.Id == ticketId);                   //find ticket
             var flag = isAssignedToTicket.AssignedToUserId.Equals(userId);                      //query if user on ticket
             return flag;//return true or false
         }

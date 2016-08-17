@@ -1,13 +1,16 @@
 ﻿using CBLSummerBugTracker08042016.Models;
 using CBLSummerBugTracker08042016.Models.CodeFirst;
 using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace CBLSummerBugTracker08042016.Controllers
 {
@@ -16,6 +19,7 @@ namespace CBLSummerBugTracker08042016.Controllers
     public class AdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
 
         // GET: Admin
         public ActionResult Index()
@@ -83,13 +87,43 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         public ActionResult ListUsers()
         {
-            var users = db.Users.ToList();
+            //UserRolesModel model = new UserRolesModel();
+            //UserRolesHelper helper = new UserRolesHelper();
+            //foreach (var user in db.Users)
+            //{
+
+            //    var roles = helper.ListUserRoles(user.Id);
+            //    foreach (var item in roles)
+            //    {
+            //        var roleName = db.Roles.Select(r => r.Name);
+            //    }
+            //    model.user = db.Users.Find(user.Id);
+            //    model.roles = roleName;
+            //}
             
 
-            return View(users);                
+              return View(db.Users.ToList());                
 
         }
 
+
+        public ActionResult ListUsersByRole()
+        {
+            UsersByRoleViewModel model = new UsersByRoleViewModel();
+            UserRolesHelper helper = new UserRolesHelper();
+            model.Admin = helper.UsersInRole("Admin");
+            model.PM = helper.UsersInRole("Project Manager");
+            model.Dev = helper.UsersInRole("Developer");
+            model.Sub = helper.UsersInRole("Submitter");
+           model.Roles = new List<string>();
+            foreach (var role in db.Roles)
+            {
+                model.Roles.Add(role.Name);
+            }
+            
+                
+            return View(model);
+        }
 
     }
 }
