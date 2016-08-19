@@ -13,13 +13,6 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
         private UserManager<ApplicationUser> manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
 
 
-        //public UserRolesHelper(ApplicationDbContext context)
-        //{
-        //    this.userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
-        //    this.roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
-        //    this.db = context;
-        //}
-
         public bool IsUserInRole(string userId, string roleName)
         {
             return manager.IsInRole(userId, roleName);

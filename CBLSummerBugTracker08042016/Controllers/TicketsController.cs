@@ -20,12 +20,12 @@ namespace CBLSummerBugTracker08042016.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
 
-        protected ApplicationDbContext ApplicationDbContext { get; set; }           
-        protected UserManager<ApplicationUser> UserManager { get; set; }            
+        protected ApplicationDbContext ApplicationDbContext { get; set; }
+        protected UserManager<ApplicationUser> UserManager { get; set; }
 
 
 
-        
+
         [Authorize]
         public ActionResult Index()
         {
@@ -34,7 +34,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             var currentUser = db.Users.Find(User.Identity.GetUserId());
 
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))
-            { 
+            {
                 return View((db.Tickets.Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());
             }
 
@@ -42,11 +42,11 @@ namespace CBLSummerBugTracker08042016.Controllers
             {
                 return View((currentUser.Project.SelectMany(p => p.Ticket)).ToList());
                 //return View(currentUser.Project.SelectMany(p => p.Ticket).AsQueryable().Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType).ToList());               //tickets of projects assigned to user
-                
+
             }
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Developer"))
             {
-               return View((db.Tickets.Where(u => u.AssignedToUserId == currentUserId).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());        //tickets assigned to user;
+                return View((db.Tickets.Where(u => u.AssignedToUserId == currentUserId).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());        //tickets assigned to user;
             }
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Submitter"))
             {
@@ -81,8 +81,26 @@ namespace CBLSummerBugTracker08042016.Controllers
             if ((ticket.OwnerUserId == currentUserId)                                                   //check if currentuser is ticketowner
                 || (ticket.AssignedToUserId == currentUserId)                                           //check if currentuser is assigned ticket
                 || (helper.IsUserInRole(currentUserId, "Admin"))                                        //check if currentuser is admin
-                /*|| (ticketProjects.Any(t => t.Equals(id)))*/)                                               //check if ticket is on assigned project
+                                                                                                        /*|| (ticketProjects.Any(t => t.Equals(id)))*/)                        //check if ticket is on assigned project
             {
+                if (ticket.TicketAttachment != null && ticket.TicketComment != null)
+                {
+                    var combinedList = new List<ICommentAttachmentInterface>();
+
+                    foreach (var item in ticket.TicketAttachment)
+                    {
+                        combinedList.Add(item);
+                    }
+                    foreach (var item in ticket.TicketComment)
+                    {
+                        combinedList.Add(item);
+                    }
+
+
+
+                    ViewBag.CommAtt = combinedList.OrderByDescending(d => d.Date);
+                }
+
                 return View(ticket);
             }
             else
@@ -163,47 +181,47 @@ namespace CBLSummerBugTracker08042016.Controllers
 
 
             UserRolesHelper helper = new UserRolesHelper();
-                var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();  //get currentuser Id
-                var currentUser = db.Users.Find(currentUserId);
-                UserProjectsHelper helper2 = new UserProjectsHelper();
+            var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();  //get currentuser Id
+            var currentUser = db.Users.Find(currentUserId);
+            UserProjectsHelper helper2 = new UserProjectsHelper();
 
-                if ((ticket.OwnerUserId == currentUserId)                   //check for owneruser
-                    || (ticket.AssignedToUserId == currentUserId)               //check for assigned user
-                    || (helper2.IsUserOnProject(currentUserId, ticket.ProjectId) && (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager")))           //check for user assigned to project, thus ticket
-                    || (helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))         //check for admin
+            if ((ticket.OwnerUserId == currentUserId)                   //check for owneruser
+                || (ticket.AssignedToUserId == currentUserId)               //check for assigned user
+                || (helper2.IsUserOnProject(currentUserId, ticket.ProjectId) && (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager")))           //check for user assigned to project, thus ticket
+                || (helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))         //check for admin
+            {
+
+                if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin") || helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))           //check for admin or project manager
                 {
 
-                    if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin") || helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))           //check for admin or project manager
-                    {
-
-                        ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "Username", ticket.AssignedToUserId);         //allow for assigning of ticket
-                    }
+                    ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "Username", ticket.AssignedToUserId);         //allow for assigning of ticket
+                }
                 if (ticket.AssignedToUserId != null)
                 {
                     ViewBag.AssignedToUserId = new SelectList(ticket.AssignedToUserId);             //otherwise just show ticket as assigned to user - no edit
                 }
-                else if(ticket.OwnerUserId != currentUserId)
-                { 
+                else if (ticket.OwnerUserId != currentUserId)
+                {
                     ViewBag.Message = "You are not authorized to view this ticket. Ticket might not be ready for editing.  Please log in with the correct credentials.";
                     return RedirectToAction("Login", "Account");
                 }
 
                 if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))                //check for admin
-                    {
-                        ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);            //allow for project list to assign to
-                    }
-                    else
-                    {
-
-                        ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");          //otherwise just show project name
-                    }
-                    ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);      //list of priority choicecs
-                    ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);        //list of status choices
-                    ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);       //list of type choices
-                    return View(ticket);
+                {
+                    ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);            //allow for project list to assign to
                 }
-            
-        
+                else
+                {
+
+                    ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");          //otherwise just show project name
+                }
+                ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);      //list of priority choicecs
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);        //list of status choices
+                ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);       //list of type choices
+                return View(ticket);
+            }
+
+
             else
             {
                 ViewBag.Message = "You are not authorized to view this ticket.  Please log in with the correct credentials.";
@@ -266,7 +284,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                     TicketNotification tn = new TicketNotification
                     {
                         TicketId = ticket.Id,
-                        UserId = ticket.AssignedToUserId                        
+                        UserId = ticket.AssignedToUserId
                     };
 
                     TicketHistory thn = new TicketHistory
@@ -304,7 +322,7 @@ namespace CBLSummerBugTracker08042016.Controllers
 
                 if (oldticket?.Title != ticket.Title)
                 {
-                    
+
                     TicketHistory th1 = new TicketHistory
                     {
                         TicketId = ticket.Id,
@@ -517,7 +535,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             return View(ticket);
         }
 
-//commented out to prevent accidental deletion of tickets
+        //commented out to prevent accidental deletion of tickets
         //// GET: Tickets/Delete/5
         //public ActionResult Delete(int? id)
         //{

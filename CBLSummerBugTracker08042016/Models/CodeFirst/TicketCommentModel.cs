@@ -5,7 +5,7 @@ using System.Web;
 
 namespace CBLSummerBugTracker08042016.Models.CodeFirst
 {
-    public class TicketComment
+    public partial class TicketComment : ICommentAttachmentInterface
     {
         public int Id { get; set; }
         public string Comment { get; set; }

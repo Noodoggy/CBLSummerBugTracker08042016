@@ -10,11 +10,6 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        //public UserTicketsHelper(ApplicationDbContext db)
-        //{
-        //    this.db = db;                                                                   //allow operations on database
-        //}
-
 
         public bool IsUserOwnedTicket(string userId, int ticketId)
         {

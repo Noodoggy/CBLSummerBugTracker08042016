@@ -2,6 +2,7 @@
 using CBLSummerBugTracker08042016.Models.CodeFirst;
 using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace CBLSummerBugTracker08042016.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-            var users = db.Users.ToList();                                          //generate list of users
+            var users = db.Users.AsQueryable().ToList();                                          //generate list of users
 
             return View(users);
         }
@@ -87,22 +88,25 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         public ActionResult ListUsers()
         {
-            //UserRolesModel model = new UserRolesModel();
+            UserRolesModel model = new UserRolesModel();
             //UserRolesHelper helper = new UserRolesHelper();
+
+
             //foreach (var user in db.Users)
             //{
 
             //    var roles = helper.ListUserRoles(user.Id);
-            //    foreach (var item in roles)
-            //    {
-            //        var roleName = db.Roles.Select(r => r.Name);
-            //    }
-            //    model.user = db.Users.Find(user.Id);
-            //    model.roles = roleName;
-            //}
-            
 
-              return View(db.Users.ToList());                
+
+            //    model.user = db.Users.Find(user.Id);
+            //return View();
+
+            //}
+
+
+
+
+            return View(db.Users.ToList());                
 
         }
 

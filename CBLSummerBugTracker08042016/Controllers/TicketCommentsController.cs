@@ -29,19 +29,19 @@ namespace CBLSummerBugTracker08042016.Controllers
             }
 
             // GET: TicketComments/Details/5
-            public ActionResult Details(int? id)
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                TicketComment ticketComments = db.TicketComments.Find(id);
-                if (ticketComments == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(ticketComments);
-            }
+            //public ActionResult Details(int? id)
+            //{
+            //    if (id == null)
+            //    {
+            //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //    }
+            //    TicketComment ticketComments = db.TicketComments.Find(id);
+            //    if (ticketComments == null)
+            //    {
+            //        return HttpNotFound();
+            //    }
+            //    return View(ticketComments);
+            //}
 
             //// GET: TicketComments/Create
             //public ActionResult Create()
@@ -184,23 +184,24 @@ namespace CBLSummerBugTracker08042016.Controllers
                 return View(ticketComment);
             }
 
-            // GET: TicketComments/Delete/5
-            public ActionResult Delete(int? id)
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                TicketComment ticketComments = db.TicketComments.Find(id);
-                if (ticketComments == null)
-                {
-                    return HttpNotFound();
-                }
-                return View(ticketComments);
-            }
+            //// GET: TicketComments/Delete/5
+            //public ActionResult Delete(int? id)
+            //{
+            //    if (id == null)
+            //    {
+            //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //    }
+            //    TicketComment ticketComments = db.TicketComments.Find(id);
+            //    if (ticketComments == null)
+            //    {
+            //        return HttpNotFound();
+            //    }
+            //    return View(ticketComments);
+            //}
 
             // POST: TicketComments/Delete/5
             [HttpPost, ActionName("Delete")]
+            [Authorize (Roles = "Admin")]
             [ValidateAntiForgeryToken]
             public ActionResult DeleteConfirmed(int id)
             {

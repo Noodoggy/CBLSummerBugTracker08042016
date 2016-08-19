@@ -162,9 +162,12 @@ else
         @*no offset col for some reason???*@
     </div>
     <div class="col-xs-5">
-        @foreach (var his in Model.TicketHistory.OrderByDescending(p => p.Changed))
-        {
+        
 
+
+
+       @foreach(var his in Model.TicketHistory.OrderByDescending(p => p.Changed))
+        {
 
             <div class="row">
                 <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
@@ -198,65 +201,90 @@ else
 
     <div class="col-xs-5">
         <div>
-            @foreach (var com in Model.TicketComment.OrderByDescending(p => p.Created))
-            {
+    @foreach (var item in ViewBag.CommAtt)
+    {
+        @*@Html.Raw(item.User.DisplayName)
+            @item.Created.LocalDateTime*@
+    if (item.GetType().BaseType.Name == "TicketComment")
+    {
 
 
-                <div class="row">
-                    <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
-                        <div class="panel panel-white post panel-shadow">
-                            <div class="post-heading">
-                                <div class="pull-left image">
-                                    <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
-                                </div>
-                                <div class="pull-left meta">
-                                    <div class="title h5">
-                                        <h4>
-                                            @Html.Raw(com.User.DisplayName)
-                                            <small>
+        @*if (item.GetType().BaseType == typeof(System.Data.Entity.DynamicProxies.TicketComment_E9EA537C7D21493028458C1D444EF3ADDAAD5CC5EF4174C18DA3D4CDA8AA89C4))
+
+            if (item.Comment != null) { @item.Comment }
+            if (item.Comment != null)
+            { @item.Description }
+            if (item.FilePath != null)*@
+        @*{
+                <img class="img-responsive panel-shadow" src="@Url.Content(item.FilePath)" alt="" />
+            }*@
 
 
-                                                @com.Created.LocalDateTime;
 
 
-                                                @*@if (User.Identity.Name == com.UserId)                //commented out for clarification on user rights
-                                                    {
-                                                        @Html.ActionLink("       Edit  ", "EditComment", new { Id = com.Id })
-                                                    }*@
 
-                                                @if (User.IsInRole("Admin") @*|| User.IsInRole("Project") || (User.Identity.Name == com.User.Email)*@)
+
+        //foreach (var com in Model.TicketComment.OrderByDescending(p => p.Created))
+        //{
+            <div class="row">
+                <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
+                    <div class="panel panel-white post panel-shadow">
+                        <div class="post-heading">
+                            <div class="pull-left image">
+                                <img src="http://bootdey.com/img/Content/user_1.jpg" class="img-circle avatar" alt="user profile image">
+                            </div>
+                            <div class="pull-left meta">
+                                <div class="title h5">
+                                    <h4>
+                                        @Html.Raw(item.User.DisplayName)
+                                        <small>
+
+
+                                            @item.Created.LocalDateTime;
+
+
+                                            @*@if (User.Identity.Name == com.UserId)                //commented out for clarification on user rights
                                                 {
-                                                    @Html.ActionLink("     Delete", "DeleteComment", new { Id = com.Id })
-                                                }
+                                                    @Html.ActionLink("       Edit  ", "EditComment", new { Id = com.Id })
+                                                }*@
+
+                                            @if (User.IsInRole("Admin") @*|| User.IsInRole("Project") || (User.Identity.Name == com.User.Email)*@)
+                                            {
+                                                @Html.ActionLink("     Delete", "DeleteComment", new { Id = item.Id })
+                                            }
 
 
-                                            </small>
+                                        </small>
 
 
-                                        </h4>
-
-                                    </div>
+                                    </h4>
 
                                 </div>
-                            </div>
-                            <div class="post-description">
-                                <h3>@com.Comment</h3>
-                                <br />
 
                             </div>
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-                                @Html.ActionLink("Back to List", "Index")
-                            </p>
+                        </div>
+                        <div class="post-description">
+                            <h3>@item.Comment</h3>
+                            <br />
 
                         </div>
+                        <p>
+                            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                            @Html.ActionLink("Back to List", "Index")
+                        </p>
+
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        //}
+
+    }
+    if (item.GetType().BaseType.Name == "TicketAttachment")
+    {
+        //foreach (var att in Model.TicketAttachment.OrderByDescending(p => p.Created))
+        //{
         <div>
-            @foreach (var att in Model.TicketAttachment.OrderByDescending(p => p.Created))
-            {
+           
 
 
                 <div class="row">
@@ -269,15 +297,15 @@ else
                                 <div class="pull-left meta">
                                     <div class="title h5">
                                         <h4>
-                                            @Html.Raw(att.User.DisplayName)
+                                            @Html.Raw(item.User.DisplayName)
                                             <small>
 
 
-                                                @att.Created.LocalDateTime;
-                                                @att.Description;
-                                                @if (att.FilePath != null)
+                                                @item.Created.LocalDateTime;
+                                                @item.Description;
+                                                @if (item.FilePath != null)
                                                 {
-                                                    <img class="img-responsive panel-shadow" src="@Url.Content(att.FilePath)" alt="" />
+                                                    <img class="img-responsive panel-shadow" src="@Url.Content(item.FilePath)" alt="" />
                                                 }
 
 
@@ -289,7 +317,7 @@ else
 
                                                 @if (User.IsInRole("Admin") @*|| User.IsInRole("Project") || (User.Identity.Name == com.User.Email)*@)
                                                 {
-                                                    @Html.ActionLink("     Delete", "DeleteComment", new { Id = att.Id })
+                                                    @Html.ActionLink("     Delete", "DeleteComment", new { Id = item.Id })
                                                 }
 
 
@@ -315,7 +343,14 @@ else
                         </div>
                     </div>
                 </div>
-            }
+            
+            
         </div>
+            //}
+        }
+    }
     </div>
+        
+    </div>
+    
 </div>

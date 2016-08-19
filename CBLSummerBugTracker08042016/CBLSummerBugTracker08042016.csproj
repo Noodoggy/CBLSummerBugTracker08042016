@@ -231,6 +231,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CodeFirst\AdminUserViewModel.cs" />
+    <Compile Include="Models\CodeFirst\CommentAttachmentInterface.cs" />
     <Compile Include="Models\CodeFirst\Helpers\UserProjectsHelper.cs" />
     <Compile Include="Models\CodeFirst\Helpers\UserRolesHelper.cs" />
     <Compile Include="Models\CodeFirst\Helpers\UserTicketsHelper.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Models\CodeFirst\ProjectUserListViewModel.cs" />
     <Compile Include="Models\CodeFirst\TicketAttachmentModel.cs" />
     <Compile Include="Models\CodeFirst\TicketCommentModel.cs" />
+    <Compile Include="Models\CodeFirst\TicketDetailsViewModel.cs" />
     <Compile Include="Models\CodeFirst\TicketHistoryModel.cs" />
     <Compile Include="Models\CodeFirst\TicketModel.cs" />
     <Compile Include="Models\CodeFirst\TicketNotificationModel.cs" />

@@ -28,6 +28,7 @@
 
 @foreach (var item in Model)
 {
+    var roles = Roles.GetRolesForUser();
     <table class="table">
         <tr>
             <td class="col-md-3">
