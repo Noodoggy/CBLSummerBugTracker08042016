@@ -12,7 +12,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
         private ApplicationDbContext db = new ApplicationDbContext();
 
 
-        public bool IsUserOnProject(string userId, int projectId)
+        public bool IsUserOnProject(string userId, int? projectId)
         {
             var isOnProject = db.Projects.FirstOrDefault(p => p.Id == projectId);//find project
             var flag = isOnProject.User.Any(u => u.Id == userId);//query if user on project
@@ -34,7 +34,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
             return userProjects;        //return list of projects
         }
 
-        public IList<string> ListProjectUsers(int projectId)
+        public IList<string> ListProjectUsers(int? projectId)
         {
             
             var project = db.Projects.Find(projectId);          //grab project with project id
@@ -48,7 +48,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
         }
 
-        public void AddUserToProject(string userId, int projectId)
+        public void AddUserToProject(string userId, int? projectId)
         {
             if (!IsUserOnProject(userId, projectId))            //if user is not on project
             {
@@ -60,7 +60,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
         }
 
-        public void RemoveUserFromProject(string userId, int projectId)
+        public void RemoveUserFromProject(string userId, int? projectId)
         {
             if (IsUserOnProject(userId, projectId))         //if user is on project
             {

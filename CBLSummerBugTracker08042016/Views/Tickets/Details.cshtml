@@ -159,7 +159,7 @@ else
 }
 <div class="row">
     <div class="col-lg-1">
-        @*no offset col for some reason???*@
+        
     </div>
     <div class="col-xs-5">
         
@@ -179,16 +179,18 @@ else
                             <div class="pull-left meta">
                                 <div class="title h5">
                                     <h4>
-                                        At @his.Changed
+                                        @his.Changed
                                         <small>
                                             @Html.Raw(his.User.DisplayName)
-                                        </small> has changed 
-                                        @his.Property from 
-                                        @his.OldValue to
-                                        @his.NewValue
-
-                                        
+                                        </small> has changed
                                     </h4>
+                                        <p>
+                                        @his.Property from </p>
+                                        <p>@his.OldValue to</p>
+                                        <p>@his.NewValue</p>
+
+
+                                    
                                 </div>
                             </div>
                         </div>
@@ -203,29 +205,9 @@ else
         <div>
     @foreach (var item in ViewBag.CommAtt)
     {
-        @*@Html.Raw(item.User.DisplayName)
-            @item.Created.LocalDateTime*@
+
     if (item.GetType().BaseType.Name == "TicketComment")
     {
-
-
-        @*if (item.GetType().BaseType == typeof(System.Data.Entity.DynamicProxies.TicketComment_E9EA537C7D21493028458C1D444EF3ADDAAD5CC5EF4174C18DA3D4CDA8AA89C4))
-
-            if (item.Comment != null) { @item.Comment }
-            if (item.Comment != null)
-            { @item.Description }
-            if (item.FilePath != null)*@
-        @*{
-                <img class="img-responsive panel-shadow" src="@Url.Content(item.FilePath)" alt="" />
-            }*@
-
-
-
-
-
-
-        //foreach (var com in Model.TicketComment.OrderByDescending(p => p.Created))
-        //{
             <div class="row">
                 <div class="col-sm-10 col-md-8 col-lg-8 col-lg-offset-2">
                     <div class="panel panel-white post panel-shadow">
@@ -281,8 +263,7 @@ else
     }
     if (item.GetType().BaseType.Name == "TicketAttachment")
     {
-        //foreach (var att in Model.TicketAttachment.OrderByDescending(p => p.Created))
-        //{
+
         <div>
            
 
@@ -346,7 +327,7 @@ else
             
             
         </div>
-            //}
+
         }
     }
     </div>

@@ -31,16 +31,16 @@
         </div>
 
 
-            @Html.HiddenFor(m => m.Created);
+            @Html.HiddenFor(m => m.Created)
 
-            @Html.HiddenFor(m => m.UserId);
+            @Html.HiddenFor(m => m.UserId)
            
 
 
         <div class="form-group">
             @Html.LabelFor(model => model.FileUrl, htmlAttributes: new { @class = "control-label col-md-2", @id = "fileUpload" })
             <div class="col-md-10">
-                <input type="file" name="image" class="form-control" id="fileUpload" />
+                @*<input type="file" name="image" class="form-control" id="fileUpload" />*@
 
                 
                 @Html.ValidationMessageFor(model => model.FileUrl, "", new { @class = "text-danger" })

@@ -35,21 +35,25 @@ namespace CBLSummerBugTracker08042016.Controllers
 
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))
             {
+                ViewBag.UserId = currentUserId;
                 return View((db.Tickets.Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());
             }
 
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))
             {
+                ViewBag.UserId = currentUserId;
                 return View((currentUser.Project.SelectMany(p => p.Ticket)).ToList());
                 //return View(currentUser.Project.SelectMany(p => p.Ticket).AsQueryable().Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType).ToList());               //tickets of projects assigned to user
 
             }
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Developer"))
             {
+                ViewBag.UserId = currentUserId;
                 return View((db.Tickets.Where(u => u.AssignedToUserId == currentUserId).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());        //tickets assigned to user;
             }
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Submitter"))
             {
+                ViewBag.UserId = currentUserId;
                 return View((db.Tickets.Where(u => u.OwnerUserId == currentUserId).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType)).ToList());             //tickets owned by user
             }
             else
@@ -73,15 +77,16 @@ namespace CBLSummerBugTracker08042016.Controllers
             }
             UserRolesHelper helper = new UserRolesHelper();
             UserProjectsHelper helper2 = new UserProjectsHelper();
-            var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();                   //find current user by id
+            var currentUserId = User.Identity.GetUserId();                   //find current user by id
             var currentUser = db.Users.Find(currentUserId);                                                //find user id 
             var ticketassigned = db.Tickets.Where(u => u.AssignedToUserId == currentUserId);             //list of tickets assigned to user
-            //var ticketProjects = helper2.ListUserProjects(currentUserId).ToList();
-            /*var ticketprojects = db.Tickets.Where(t => t.ProjectId == helper2.); */              //grab list of projects assigned to check if ticket is in projects
+            //var listProjectsByInt = helper2.ListUserProjects(currentUserId).ToList();
+            /*var ticketprojects = db.Tickets.Where(t => t.ProjectId == helper2.);*/               //grab list of projects assigned to check if ticket is in projects
+            ViewBag.UserId = currentUserId;
             if ((ticket.OwnerUserId == currentUserId)                                                   //check if currentuser is ticketowner
                 || (ticket.AssignedToUserId == currentUserId)                                           //check if currentuser is assigned ticket
                 || (helper.IsUserInRole(currentUserId, "Admin"))                                        //check if currentuser is admin
-                                                                                                        /*|| (ticketProjects.Any(t => t.Equals(id)))*/)                        //check if ticket is on assigned project
+              /*|| (ticketProjects.Any(t => t.Equals(id)))*/)                        //check if ticket is on assigned project
             {
                 if (ticket.TicketAttachment != null && ticket.TicketComment != null)
                 {
@@ -101,6 +106,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                     ViewBag.CommAtt = combinedList.OrderByDescending(d => d.Date);
                 }
 
+                
                 return View(ticket);
             }
             else
@@ -111,7 +117,7 @@ namespace CBLSummerBugTracker08042016.Controllers
 
 
         // GET: Tickets/Create
-        [Authorize(Roles = "Submitter, Admin")]
+        [Authorize]
         public ActionResult Create()
         {
 
@@ -127,7 +133,14 @@ namespace CBLSummerBugTracker08042016.Controllers
                 ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");
             }
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
+            if ((helper.IsUserInRole(User.Identity.GetUserId(), "Submitter")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Developer")))             //possible code for changing status to always pending if not project manager or admin
+            {
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses.Where(s => s.Name == "Pending").AsEnumerable(), "Id", "Name")/* "Pending"*/;
+            }
+            else
+            {
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
+            }
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
             return View();
         }
@@ -140,22 +153,32 @@ namespace CBLSummerBugTracker08042016.Controllers
         [Authorize(Roles = "Submitter, Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Created,Updated,Title,Description,OwnerUserId,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId")] Ticket tickets)
+        public ActionResult Create([Bind(Include = "Id,Created,Updated,Title,Description,OwnerUserId,TicketStatusId")] Ticket tickets)  //extracted code:  ,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId
         {
             if (ModelState.IsValid)
             {
-                db.Tickets.Add(tickets);                                                        //add data to tickets table
-                tickets.OwnerUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();         //set owner to current user id
+                tickets.ProjectId = null;
+                tickets.TicketStatus = db.TicketStatuses.Find(tickets.TicketStatusId);
+                db.Tickets.Add(tickets);                //add data to tickets table
+                db.Entry(tickets).Property("ProjectId").IsModified = false;
+                tickets.OwnerUserId = User.Identity.GetUserId();         //set owner to current user id
                 tickets.OwnerUser = db.Users.Find(tickets.OwnerUserId);                     //set owner to current user (for display purposes)
                 tickets.Created = DateTimeOffset.Now;
                 db.SaveChanges();
 
 
             }
-
+            UserRolesHelper helper = new UserRolesHelper();
             ViewBag.ProjectId = new SelectList(tickets.OwnerUser.Project, "Id", "Name");
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name");
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
+            if ((helper.IsUserInRole(User.Identity.GetUserId(), "Submitter")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Developer")))             //possible code for changing status to always pending if not project manager or admin
+            {
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses.Where(s => s.Name == "Pending").AsEnumerable(), "Id", "Name");
+            }
+            else
+            {
+                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name");
+            }
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name");
 
             return RedirectToAction("Index");
@@ -164,6 +187,7 @@ namespace CBLSummerBugTracker08042016.Controllers
         }
 
         // GET: Tickets/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             Ticket ticket = db.Tickets.Find(id);                            //find ticket by id
@@ -181,7 +205,7 @@ namespace CBLSummerBugTracker08042016.Controllers
 
 
             UserRolesHelper helper = new UserRolesHelper();
-            var currentUserId = System.Web.HttpContext.Current.User.Identity.GetUserId();  //get currentuser Id
+            var currentUserId = User.Identity.GetUserId();  //get currentuser Id
             var currentUser = db.Users.Find(currentUserId);
             UserProjectsHelper helper2 = new UserProjectsHelper();
 
@@ -206,17 +230,29 @@ namespace CBLSummerBugTracker08042016.Controllers
                     return RedirectToAction("Login", "Account");
                 }
 
-                if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))                //check for admin
+                if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))              //check for admin
                 {
                     ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);            //allow for project list to assign to
+                }
+                else if (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))              //check for project manager
+                {
+                    ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name", ticket.ProjectId);             //list of assigned projects for PM to assign tickets to
                 }
                 else
                 {
 
-                    ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");          //otherwise just show project name
+                    ViewBag.ProjectId = ViewBag.ProjectId = new SelectList(db.Projects.Where(t => t.Id == ticket.ProjectId).AsEnumerable(), "Id", "Name");          //otherwise just show project name
                 }
                 ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);      //list of priority choicecs
-                ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);        //list of status choices
+                                                                                                                            //ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);        //list of status choices
+                if ((helper.IsUserInRole(User.Identity.GetUserId(), "Submitter")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Developer")))          //possible code for changing status to static if not project manager or admin
+                {
+                    ViewBag.TicketStatusId = new SelectList(db.TicketStatuses.Where(t => t.Id == ticket.TicketStatusId).AsEnumerable(), "Id", "Name");
+                }
+                else if ((helper.IsUserInRole(User.Identity.GetUserId(), "Admin")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager")))
+                {
+                    ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
+                }
                 ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);       //list of type choices
                 return View(ticket);
             }
@@ -364,11 +400,16 @@ namespace CBLSummerBugTracker08042016.Controllers
 
                 if (oldticket?.ProjectId != ticket.ProjectId)
                 {
+                    var oldValue = "Not assigned";
+                    if (oldticket?.ProjectId != null)
+                    {
+                        oldValue = db.Projects.Find(oldticket.ProjectId).Name; 
+                    }
                     TicketHistory th3 = new TicketHistory
                     {
                         TicketId = ticket.Id,
                         Property = "Updated",
-                        OldValue = db.Projects.Find(oldticket?.ProjectId).Name,
+                        OldValue = oldValue,
                         NewValue = db.Projects.Find(ticket.ProjectId).Name,
                         Changed = changed,
                         UserId = userId,
@@ -384,11 +425,16 @@ namespace CBLSummerBugTracker08042016.Controllers
 
                 if (oldticket?.TicketTypeId != ticket.TicketTypeId)
                 {
+                    var oldValue = "Not assigned";
+                    if (oldticket?.TicketTypeId != null)
+                    {
+                        oldValue = db.Projects.Find(oldticket.TicketTypeId).Name;
+                    }
                     TicketHistory th4 = new TicketHistory
                     {
                         TicketId = ticket.Id,
                         Property = "TicketTypeId",
-                        OldValue = db.TicketTypes.Find(oldticket?.TicketTypeId).Name,
+                        OldValue = oldValue,
                         NewValue = db.TicketTypes.Find(ticket.TicketTypeId).Name,
                         Changed = changed,
                         UserId = userId,
@@ -404,11 +450,16 @@ namespace CBLSummerBugTracker08042016.Controllers
 
                 if (oldticket?.TicketPriorityId != ticket.TicketPriorityId)
                 {
+                    var oldValue = "Not assigned";
+                    if (oldticket?.TicketPriorityId != null)
+                    {
+                        oldValue = db.Projects.Find(oldticket.TicketPriorityId).Name;
+                    }
                     TicketHistory th5 = new TicketHistory
                     {
                         TicketId = ticket.Id,
                         Property = "TicketPriorityId",
-                        OldValue = db.TicketPriorities.Find(oldticket?.TicketPriorityId).Name,
+                        OldValue = oldValue,
                         NewValue = db.TicketPriorities.Find(ticket.TicketPriorityId).Name,
                         Changed = changed,
                         UserId = userId,
@@ -424,11 +475,16 @@ namespace CBLSummerBugTracker08042016.Controllers
 
                 if (oldticket?.TicketStatusId != ticket.TicketStatusId)
                 {
+                    var oldValue = "Not assigned";
+                    if (oldticket?.TicketStatusId != null)
+                    {
+                        oldValue = db.Projects.Find(oldticket.TicketStatusId).Name;
+                    }
                     TicketHistory th6 = new TicketHistory
                     {
                         TicketId = ticket.Id,
                         Property = "TicketStatusId",
-                        OldValue = db.TicketStatuses.Find(oldticket?.TicketStatusId).Name,
+                        OldValue = oldValue,
                         NewValue = db.TicketStatuses.Find(ticket.TicketStatusId).Name,
                         Changed = changed,
                         UserId = userId,
@@ -469,7 +525,7 @@ namespace CBLSummerBugTracker08042016.Controllers
 
 
 
-
+                    
                     SendGridMessage mymessage2 = new SendGridMessage();
                     mymessage2.AddTo(assignNotification.Destination);
                     mymessage2.From = new System.Net.Mail.MailAddress(from);
@@ -485,30 +541,23 @@ namespace CBLSummerBugTracker08042016.Controllers
 
 
                     //code to determine if old assigned user has other tickets assigned to project and if not, then remove from project
-                    UserProjectsHelper helper = new UserProjectsHelper();
-                    var userTicket = db.Users.Find(oldticket.AssignedToUserId).Project.SelectMany(p => p.Ticket).ToList();
-                    var projectTickets = userTicket.FindAll(t => t.ProjectId == oldticket.ProjectId);
 
-                    if (projectTickets.Count() == 1)
+                        UserProjectsHelper helper3 = new UserProjectsHelper();
+                    if (oldticket.AssignedToUserId != null)
                     {
-                        helper.RemoveUserFromProject(oldticket.AssignedToUserId, ticket.ProjectId);
+                        var userTicket = db.Users.Find(oldticket.AssignedToUserId).Project.SelectMany(p => p.Ticket).ToList();
+                        var projectTickets = userTicket.FindAll(t => t.ProjectId == oldticket.ProjectId);
+
+                        if (projectTickets.Count() == 1)                //code to possibly remove user from project if no other tickets on project
+                        {
+                            helper3.RemoveUserFromProject(oldticket.AssignedToUserId, ticket.ProjectId);
+                        }
                     }
-
-                    //UserTicketsHelper helper2 = new UserTicketsHelper(db);
-
-
-                    //if (projectTickets.Count() == 1)
-                    //{
-                    //    helper.RemoveUserFromProject(oldticket.AssignedToUserId, ticket.ProjectId);
-                    //}
-
-                    helper.AddUserToProject(ticket.AssignedToUserId, ticket.ProjectId);  //automatically add user to project
-
+                        helper3.AddUserToProject(ticket.AssignedToUserId, ticket.ProjectId);  //automatically add user to project
+                    
 
                 }
 
-                //db.Entry(ticket).Property("Title").IsModified = true;                       //added this and and the next line.
-                //db.Entry(ticket).Property("Created").IsModified = false;
 
                 db.Entry(ticket).State = EntityState.Modified;                              //orignal statement
                 db.Entry(ticket).Property("Title").IsModified = true;                       //added this and and the next line.
@@ -525,14 +574,69 @@ namespace CBLSummerBugTracker08042016.Controllers
             }
 
 
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "Username", ticket.AssignedToUserId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+            UserRolesHelper helper = new UserRolesHelper();
+            var currentUserId = User.Identity.GetUserId();  //get currentuser Id
+            var currentUser = db.Users.Find(currentUserId);
+            UserProjectsHelper helper2 = new UserProjectsHelper();
+
+            if ((ticket.OwnerUserId == currentUserId)                   //check for owneruser
+                || (ticket.AssignedToUserId == currentUserId)               //check for assigned user
+                || (helper2.IsUserOnProject(currentUserId, ticket.ProjectId) && (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager")))           //check for user assigned to project, thus ticket
+                || (helper.IsUserInRole(User.Identity.GetUserId(), "Admin")))         //check for admin
+            {
+
+                if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin") || helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))           //check for admin or project manager
+                {
+
+                    ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "Username", ticket.AssignedToUserId);         //allow for assigning of ticket
+                }
+                if (ticket.AssignedToUserId != null)
+                {
+                    ViewBag.AssignedToUserId = new SelectList(ticket.AssignedToUserId);             //otherwise just show ticket as assigned to user - no edit
+                }
+                else if (ticket.OwnerUserId != currentUserId)
+                {
+                    ViewBag.Message = "You are not authorized to view this ticket. Ticket might not be ready for editing.  Please log in with the correct credentials.";
+                    return RedirectToAction("Login", "Account");
+                }
+
+                if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))              //check for admin
+                {
+                    ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);            //allow for project list to assign to
+                }
+                else if (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))              //check for project manager
+                {
+                    ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name", ticket.ProjectId);             //list of assigned projects for PM to assign tickets to
+                }
+                else
+                {
+
+                    ViewBag.ProjectId = ViewBag.ProjectId = new SelectList(db.Projects.Where(t => t.Id == ticket.ProjectId).AsEnumerable(), "Id", "Name");          //otherwise just show project name
+                }
+                ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);      //list of priority choicecs
+                                                                                                                            //ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);        //list of status choices
+                if ((helper.IsUserInRole(User.Identity.GetUserId(), "Submitter")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Developer")))          //possible code for changing status to static if not project manager or admin
+                {
+                    ViewBag.TicketStatusId = new SelectList(db.TicketStatuses.Where(t => t.Id == ticket.TicketStatusId).AsEnumerable(), "Id", "Name");
+                }
+                else if ((helper.IsUserInRole(User.Identity.GetUserId(), "Admin")) || (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager")))
+                {
+                    ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
+                }
+                ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);       //list of type choices
+                ViewBag.UserId = currentUserId;
+                return View(ticket);
+            }
 
 
-            return View(ticket);
+            else
+            {
+                ViewBag.Message = "You are not authorized to view this ticket.  Please log in with the correct credentials.";
+                return RedirectToAction("Login", "Account");
+            }
+        
+
+            
         }
 
         //commented out to prevent accidental deletion of tickets
@@ -568,23 +672,28 @@ namespace CBLSummerBugTracker08042016.Controllers
         public ActionResult MyTickets()
         {
             //helps create list of projects user is assigned to 
-            var currentuser = User.Identity.GetUserId();
-            return View(db.Tickets.Where(u => u.OwnerUserId == currentuser).ToList());
+            var currentUserId = User.Identity.GetUserId();
+            
+            ViewBag.UserId = currentUserId;
+            return View(db.Tickets.Where(u => u.OwnerUserId == currentUserId).ToList());
         }
 
 
 
         public ActionResult AssignedTickets()
         {
-            var currentuser = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            var ticket = db.Tickets.Where(u => u.AssignedToUserId == currentuser);
+            var currentUserId = User.Identity.GetUserId();
+            var ticket = db.Tickets.Where(u => u.AssignedToUserId == currentUserId);
+            ViewBag.UserId = currentUserId;
             return View(ticket.ToList());
         }
 
         public ActionResult MyProjectTickets([Bind(Include = "ProjectName, Id, tickets")] TicketViewModel model)
         {
-            var currentuser = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            var ticket = db.Users.Find(currentuser).Project.SelectMany(p => p.Ticket);
+            var currentUserId = User.Identity.GetUserId();
+            
+            var ticket = db.Users.Find(currentUserId).Project.SelectMany(p => p.Ticket);
+            ViewBag.UserId = currentUserId;
             return View(ticket.ToList());
         }
 

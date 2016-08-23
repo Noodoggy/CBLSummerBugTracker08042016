@@ -25,12 +25,34 @@
         <dd>
             @Html.DisplayFor(model => model.Created)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model =>model.Ticket)
+        </dt>
+        
+           @{ var counter = 1;}
+                    @foreach (var item in Model.Ticket)
+                    {
 
+                    <dd>
+                        <b>Ticket #@counter</b>
+                    
+                    Description: @item.Description
+                </dd>
+                <dd>
+                    Assigned to: @item.AssignedToUser.DisplayName
+                 </dd>
+                 <dd>
+                     Ticket Owner: @item.OwnerUser.DisplayName   
+
+                </dd>
+                counter++;
+                    }
+       
     </dl>
 </div>
 <p>
 
-    @Html.ActionLink("Edit Assigned Users", "EditAssignedProjectUsers", new { id = Model.Id })
+    @Html.ActionLink("Edit Assigned Users", "EditAssignedProjectUsers", new { id = Model.Id }) |
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

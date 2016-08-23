@@ -67,7 +67,19 @@ namespace CBLSummerBugTracker08042016
             {
                 ClientId = "443102604584-335ppdbktsoto3ut8feu6i7obnrja91n.apps.googleusercontent.com",
                 ClientSecret = "_yglV9Lk_983K9qe1e0SS4EM"
+
+
             });
+
+
+            //an attempt to login user using external login
+            //var googleOptions = new GoogleOAuth2AuthenticationOptions()
+            //{
+            //    ClientId = "443102604584-335ppdbktsoto3ut8feu6i7obnrja91n.apps.googleusercontent.com",
+            //    ClientSecret = "_yglV9Lk_983K9qe1e0SS4EM"
+            //};
+            //googleOptions.Scope.Add("email"); //!! Add this !!
+            //app.UseGoogleAuthentication(googleOptions);
 
             app.UseLinkedInAuthentication(
                "78sel5pcrcq30g",

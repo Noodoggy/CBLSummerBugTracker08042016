@@ -85,7 +85,7 @@
                     @Html.HiddenFor(model => item.AssignedToUserId)
                     @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
                 </td>
-                @if ((User.IsInRole("Admin")) || (User.IsInRole("Project Manager")))
+                @if ((User.IsInRole("Admin")) || (User.IsInRole("Project Manager")) || (item.AssignedToUserId == ViewBag.UserId || (item.OwnerUserId == ViewBag.UserId)))
                 {
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

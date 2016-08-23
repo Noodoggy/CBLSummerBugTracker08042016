@@ -72,7 +72,7 @@ namespace CBLSummerBugTracker08042016.Models
         public DbSet<Project> Projects { get; set; }
 
 
-        //public System.Data.Entity.DbSet<CBLSummerBugTracker08042016.Models.ApplicationUser> ApplicationUsers { get; set; }
+        
     }
 
 }

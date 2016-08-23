@@ -59,19 +59,31 @@
             {
                 <tr>
                     <td>
+                        @if (item.TicketPriority != null)
+                        {
                         <button type="button" class="btn btn-outline btn-success">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</button>
+                        }
                     </td>
                     <td>
+                        @if (item.TicketStatus != null)
+                        {
                         <button type="button" class="btn btn-outline btn-@item.TicketStatus.Name">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</button>
+                        }
                     </td>
                     <td id="@item.TicketType">
+                        @if (item.TicketType != null)
+                        {
                         @Html.DisplayFor(modelItem => item.TicketType.Name)
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Created.LocalDateTime)
                     </td>
                     <td>
+                        @if (item.Updated != null)
+                        {
                         @Html.DisplayFor(modelItem => item.Updated)
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Title)
@@ -84,7 +96,10 @@
                         @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
                     </td>
                     <td>
+                        @if (item.TicketType != null)
+                        {
                         @Html.DisplayFor(modelItem => item.ProjectId)
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
