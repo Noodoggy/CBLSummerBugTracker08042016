@@ -1,0 +1,161 @@
+﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.CodeFirst.Ticket>
+
+<h2>My Project Tickets</h2>
+
+<div class="content animate-panel">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="hpanel">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        <a class="closebox"><i class="fa fa-times"></i></a>
+                    </div>
+                                    </div>
+                <div class="panel-body">
+                    <input type="text" class="form-control input-sm m-b-md" id="filter" placeholder="Search in table">
+                    <table id="example3" class="footable table table-stripped toggle-arrow-tiny" data-page-size="10" data-filter=#filter>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Project @Html.DisplayNameFor(model => model.Project.Name)
+                                </th>
+                                <th>
+                                    Ticket @Html.DisplayNameFor(model => model.Title)
+                                </th>
+                                <th>
+                                    Ticket @Html.DisplayNameFor(model => model.Description)
+                                </th>
+                                @*<th>
+                                    @Html.DisplayNameFor(model => model.OwnerUser.FirstName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketPriority)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketStatus)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Created)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Updated)
+                                </th>*@
+                                <th>
+                                    @Html.DisplayNameFor(model => model.AssignedToUserId)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    @*<td>
+                                        @Html.HiddenFor(model => item.OwnerUserId)
+                                        @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
+                                    </td>*@
+                                    @*<td>
+                                        @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TicketType.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created.LocalDateTime)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Updated)
+                                    </td>*@
+                                    <td>
+                                        @Html.HiddenFor(model => item.AssignedToUserId)
+                                        @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
+                                    </td>
+                                    @if ((User.IsInRole("Admin")) || (User.IsInRole("Project Manager")) || (item.AssignedToUserId == ViewBag.UserId || (item.OwnerUserId == ViewBag.UserId)))
+                                    {
+                                        <td>
+                                        <a>@Url.Action("Edit", "Tickets", new { id = item.Id })Edit  |</a>
+
+                                        <a>@Url.Action("Details", "Tickets", new { id = item.Id })Details</a>
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            @: |
+                                            <a>@Url.Action("Delete", "Tickets", new { id = item.Id })Delete</a>
+                                        }
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                        </td>
+                                    }
+
+                                </tr>
+
+
+                            }
+                        </tbody>
+
+                    </table>
+
+
+                    <p>
+                        @Html.ActionLink("Back to List", "Index")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--jQuery-->
+@*<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>*@
+@*@Scripts.Render("~/bundles/jquery")*@
+
+<!--DataTables-->
+@*<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+
+
+    <script>
+        $('#ticket_table').DataTable();
+    </script>*@
+
+
+@*@section Styles {
+    @Styles.Render("~/bundles/fooTable/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/fooTable/js")
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            // Initialize Example 1
+            $('#example1').footable();
+
+            // Initialize Example 2
+            $('#example2').footable();
+
+        });
+
+    </script>
+}*@

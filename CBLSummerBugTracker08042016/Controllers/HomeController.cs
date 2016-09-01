@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,17 +15,13 @@ namespace CBLSummerBugTracker08042016.Controllers
             return View();
         }
 
-        public ActionResult About()
+        [Authorize]
+        public ActionResult Dashboard()
         {
-            ViewBag.Message = "Your application description page.";
+            
+              ViewBag.UserId = User.Identity.GetUserId();
 
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
+           
             return View();
         }
     }

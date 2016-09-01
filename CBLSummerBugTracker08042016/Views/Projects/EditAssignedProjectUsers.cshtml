@@ -1,6 +1,6 @@
 ﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.ProjectUserListViewModel
 
-<h2>EditAssignedUsers</h2>
+@*<h2>EditAssignedUsers</h2>
 
 
 
@@ -32,4 +32,80 @@
         </div>
         @Html.ActionLink("Back to Projects", "Index")
     </div>
+}*@
+
+@using (Html.BeginForm("EditAssignedProjectUsers", "Projects", FormMethod.Post))
+{
+    <div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                    <li>
+                        <a href="@Url.Action("Index", "Projects")">Project Management</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Details", "Projects", new { id = Model.Project.Id })">Project Management</a>
+                    </li>
+                    <li class="active">
+                        <span>Edit Project Users</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Projects
+            </h2>
+            <small>List of projects.</small>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-6 col-sm-offset-3">
+<div class="hpanel plan-box hgreen active">
+    <div class="panel-heading hbuilt text-center">
+        <h4 class="font-bold">@Model.ProjectName</h4>
+    </div>
+    <div class="panel-body">
+        <p class="text-muted">
+            select users to add to project, shift for group select, control for precise select
+        </p>
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-sm-3">
+                        
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+
+                            @Html.ListBox("selected", Model.users)
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                    </div>
+                    </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            @*<div class="col-md-offset-2 col-md-10">*@
+                            <input type="submit" value="Assign To Project" class="btn btn-success btn-sm m-t-xs" />
+                            @*</div>*@
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 }

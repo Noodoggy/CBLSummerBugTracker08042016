@@ -1,0 +1,103 @@
+﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.TicketManagementViewModel
+    @{
+    ViewBag.Title = "TicketManagement";
+}
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                    <li class="active">
+                        <a href="@Url.Action("TicketManagement", "Tickets")">Ticket Management</a>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Tickets
+            </h2>
+            <small>Ticket Management varies by role</small>
+        </div>
+    </div>
+</div>
+@if (User.IsInRole("Submitter") || User.IsInRole("Admin"))
+{ 
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+           
+            @Html.Partial("_Create", Model.CreateTicket)
+
+        </div>
+    </div>
+</div>
+}
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#tab-3"> <i class="fa fa-laptop"></i>My Tickets</a></li>
+            <li class=""><a data-toggle="tab" href="#tab-4"><i class="fa fa-desktop"></i>My Assigned Tickets</a></li>
+            <li class=""><a data-toggle="tab" href="#tab-5"><i class="fa fa-database"></i>My Project Tickets</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-3" class="tab-pane active">
+                <div class="panel-body">
+
+                    @Html.Partial("_MyTickets", Model.TicketList)
+
+                </div>
+            </div>
+            <div id="tab-4" class="tab-pane">
+                <div class="panel-body">
+
+                    @Html.Partial("_AssignedTickets", Model.TicketList)
+
+                </div>
+            </div>
+            <div id="tab-5" class="tab-pane">
+                <div class="panel-body">
+
+                    @Html.Partial("_MyProjectTickets", Model.TicketList)
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    @section Styles {
+        @Styles.Render("~/bundles/fooTable/css")
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/fooTable/js")
+
+        <script type="text/javascript">
+
+            $(function () {
+
+                // Initialize Example 1
+                $('#example1').footable();
+
+                // Initialize Example 2
+                $('#example2').footable();
+
+                // Initialize Example 3
+                $('#example3').footable();
+
+            });
+
+        </script>
+    }

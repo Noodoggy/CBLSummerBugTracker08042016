@@ -16,7 +16,7 @@ using System.Web.Security;
 namespace CBLSummerBugTracker08042016.Controllers
 {
 
-    [Authorize(Roles = "Admin, Project Manager")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -88,25 +88,24 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         public ActionResult ListUsers()
         {
-            UserRolesModel model = new UserRolesModel();
-            //UserRolesHelper helper = new UserRolesHelper();
+            
+            var user = db.Users;                                                   //find user by id
+            UserRolesHelper helper = new UserRolesHelper();                                     //instantiate helper
+                                                           //instantiate viewmodel
+            List<AdminUserViewModel> list = new List<AdminUserViewModel>();
+            foreach (var item in user)
+            {
+                var model = new AdminUserViewModel();
+                model.Name = item.DisplayName;                                                      //use display name for user
+                model.Id = item.Id;                                                                   //add user data to viewmodel
+                model.selected = helper.ListUserRoles(item.Id).ToArray();                                    //add user roles to viewmodel
+                //model.roles = new MultiSelectList(db.Roles, "Name", "Name", model.selected);
+                //list of roles with user roles selected
+                list.Add(model);
 
-
-            //foreach (var user in db.Users)
-            //{
-
-            //    var roles = helper.ListUserRoles(user.Id);
-
-
-            //    model.user = db.Users.Find(user.Id);
-            //return View();
-
-            //}
-
-
-
-
-            return View(db.Users.ToList());                
+            }
+            return View(list);
+   
 
         }
 
@@ -115,11 +114,11 @@ namespace CBLSummerBugTracker08042016.Controllers
         {
             UsersByRoleViewModel model = new UsersByRoleViewModel();
             UserRolesHelper helper = new UserRolesHelper();
-            model.Admin = helper.UsersInRole("Admin");
-            model.PM = helper.UsersInRole("Project Manager");
-            model.Dev = helper.UsersInRole("Developer");
-            model.Sub = helper.UsersInRole("Submitter");
-           model.Roles = new List<string>();
+           // model.Admin = helper.UsersInRole("Admin");
+           // model.PM = helper.UsersInRole("Project Manager");
+           // model.Dev = helper.UsersInRole("Developer");
+           // model.Sub = helper.UsersInRole("Submitter");
+           //model.Roles = new List<string>();
             foreach (var role in db.Roles)
             {
                 model.Roles.Add(role.Name);
@@ -129,5 +128,50 @@ namespace CBLSummerBugTracker08042016.Controllers
             return View(model);
         }
 
-    }
+        public ActionResult RoleManagement()
+        {
+                                                               //find user by id
+            UserRolesHelper helper = new UserRolesHelper();                                     //instantiate helper                                            
+            var roleList = new List<RoleManagerViewModel>();                                                                                   //var roleList = new List<RoleManagerViewModel>();
+            var roles = new List<string>();                                                                             //var roles = new List<string>();
+            foreach (var role in db.Roles)
+            {
+                if (role.Name != "Admin")
+                    roles.Add(role.Name);
+            }
+            
+            foreach (var item in roles)
+                {
+
+                RoleManagerViewModel model = new RoleManagerViewModel();
+                model.RoleName = item;
+
+                //var users = helper.UsersInRole(item).ToArray();
+                
+                model.SelectedList = helper.UsersInRole(item).ToArray().Select(u => u.Id).ToArray();
+                model.RoleList = new MultiSelectList(db.Users, "Id", "DisplayName", model.SelectedList);
+
+                roleList.Add(model);
+            }
+
+
+            return View(roleList);
+        }
+
+        [HttpPost]
+        public ActionResult RoleManagement([Bind(Include = "RoleName, RoleList, SelectedList")] RoleManagerViewModel model)
+        {
+            
+                foreach (var user in model.SelectedList)
+                {
+                    UserRolesHelper helper = new UserRolesHelper();
+                    var userId = db.Users.Find(user);
+                    helper.AddUserToRole(userId.Id, model.RoleName);
+                }
+
+            
+            return View();
+        }
+
+        }
 }

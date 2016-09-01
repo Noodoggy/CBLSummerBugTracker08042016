@@ -1,0 +1,152 @@
+﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.CodeFirst.Ticket>
+
+
+<div class="content animate-panel">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="hpanel">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                        <a class="closebox"><i class="fa fa-times"></i></a>
+                    </div>
+                  
+                </div>
+                <div class="panel-body">
+                    <input type="text" class="form-control input-sm m-b-md" id="filter" placeholder="Search in table">
+                    <table id="example1" class="footable table table-stripped toggle-arrow-tiny" data-page-size="10" data-filter=#filter>
+                        <thead>
+                            <tr>
+                                @*<th>
+                                    @Html.DisplayNameFor(model => model.OwnerUser.DisplayName)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketPriority)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketStatus)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Created)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Updated)
+                                </th>*@
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Title)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Description)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Project)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.AssignedToUser)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @*<td>
+                                        @Html.HiddenFor(model => item.OwnerUserId)
+                                        @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
+                                    </td>*@
+                                    @*<td>
+                                        @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TicketType.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created.LocalDateTime)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Updated)
+                                    </td>*@
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
+                                    </td>
+                                                                        @*<td>
+                                        @Html.HiddenFor(model => item.OwnerUserId)
+                                        @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
+                                    </td>*@
+                                    <td>
+                                        @if (ViewBag.UserId == item.AssignedToUserId || ViewBag.UserId == item.OwnerUserId || User.IsInRole("Project Manager")|| User.IsInRole("Admin"))
+                                        {
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+
+
+                                        }
+
+                                        @Html.ActionLink("Details", "Details", new { id = item.Id })|
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                          @: |  @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <p>
+                        @Html.ActionLink("Back to List", "Index")
+                    </p>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@*code i tried to use in making edit button a modal-- does not seem to go to the get action????*@
+@*                                            <div class="text-center">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+            Edit
+        </button>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="color-line"></div>
+                <div class="modal-header text-center">
+                    <h4 class="modal-title">Edit Ticket</h4>
+                    <small class="font-bold"></small>
+                </div>
+                <div class="modal-body">
+                    <p>
+                       @Html.Partial("Edit", item)
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    @*<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>*@
+                                                        @*</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        } |
+                                        {*@
+                

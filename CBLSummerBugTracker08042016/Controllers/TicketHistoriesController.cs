@@ -36,14 +36,14 @@ namespace CBLSummerBugTracker08042016.Controllers
             }
             return View(ticketHistory);
         }
-
+        //commented for preserving history, can uncomment to make changes
         // GET: TicketHistories/Create
-        public ActionResult Create()
-        {
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title");
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
-            return View();
-        }
+        //public ActionResult Create()
+        //{
+        //    ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title");
+        //    ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
+        //    return View();
+        //}
 
         // POST: TicketHistories/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -63,7 +63,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketHistory.UserId);
             return View(ticketHistory);
         }
-//commented for preserving history, can incomment to make changes
+//commented for preserving history, can uncomment to make changes
         //// GET: TicketHistories/Edit/5
         //public ActionResult Edit(int? id)
         //{

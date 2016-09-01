@@ -1,58 +1,312 @@
 ﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.Project
+@using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+@{
+    ViewBag.Title = "ProjectDetail";
+}
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model =>model.Ticket)
-        </dt>
-        
-           @{ var counter = 1;}
-                    @foreach (var item in Model.Ticket)
-                    {
+<div class="normalheader transition">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
 
-                    <dd>
-                        <b>Ticket #@counter</b>
-                    
-                    Description: @item.Description
-                </dd>
-                <dd>
-                    Assigned to: @item.AssignedToUser.DisplayName
-                 </dd>
-                 <dd>
-                     Ticket Owner: @item.OwnerUser.DisplayName   
-
-                </dd>
-                counter++;
-                    }
-       
-    </dl>
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                    <li>
+                        <a href="@Url.Action("Index", "Projects")">Project Management</a>
+                    </li>
+                    <li class="active">
+                        <span>Project detail</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Project detail
+            </h2>
+            <small>Special page for project detail.</small>
+        </div>
+    </div>
 </div>
-<p>
 
-    @Html.ActionLink("Edit Assigned Users", "EditAssignedProjectUsers", new { id = Model.Id }) |
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<div class="content animate-panel">
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <div class="font-bold m-b-sm">
+                Project details
+            </div>
+
+            <div class="hpanel">
+                <div class="panel-body">
+
+                    @*<div class="pull-right">
+                        <button class="btn btn-success btn-xs">  Active</button>
+                        <button class="btn btn-default btn-xs"> <i class="fa fa-pencil"></i> Edit</button>
+                    </div>*@
+                    <h2 class="m-t-none">@Model.Name</h2>
+                    <small>
+                        
+                    </small>
+                    <div class="small m-t-xs">
+                        <strong>Created:</strong> @Model.Created.LocalDateTime<br />
+                        
+                    </div>
+
+
+
+                    <div class="m-t-md">
+                        <canvas id="lineOptions" height="60"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="font-bold m-b-sm">
+                Project Tickets
+            </div>
+            <div class="hpanel">
+
+                <div class="panel-body">
+
+                    <p>
+                        <small>by latest updated</small>
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Updated
+                                    <th>
+                                        Ticket
+                                    </th>
+                                    <th>
+                                        Description
+                                    </th>
+                                    <th>
+                                        Assigned Developer
+                                    </th>
+                                    <th>
+                                        Priority
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+@foreach (var item in Model.Ticket.OrderByDescending(c => c.Updated))
+{
+                                <tr>
+                                    <td>
+                                        <span class="label label-success">@item.Updated</span>
+                                    </td>
+                                    <td class="issue-info">
+                                        <a href=@Url.Action(
+  "Details", "Tickets", new { id = item.Id })
+                                        >@item.Title
+</a></td>
+                                       <td>
+                                        <small>
+                                            @item.Description
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @if (item.AssignedToUser != null) { 
+                                        @item.AssignedToUser.DisplayName}
+                                    </td>
+                                    <td>
+                                        @item.TicketPriority.Name
+                                    </td>
+                                    @*<td class="text-right">
+                                        <button class="btn btn-default btn-xs"> Action</button>
+                                    </td>*@
+                                </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="col-md-4">
+
+            <div class="font-bold m-b-sm">
+                Project statistics
+            </div>
+
+            <div class="hpanel stats">
+                <div class="panel-body">
+
+                    <div>
+                        <i class="pe-7s-ticket fa-4x"></i>
+                        <h1 class="m-xs text-success">@Model.Ticket.Count</h1>
+                    </div>
+
+                    <p>
+                        <strong>Tickets</strong>
+                    </p>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Tickets Open</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <small class="stat-label">Last week</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Tickets Closed</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <small class="stat-label">Last week</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*placeholder for using partial to edit users on this page*@
+            @*<div class="font-bold m-b-sm">
+                <div class="hpanel">
+                    <div class="panel-body">
+                        @Html.Partial("_EditAssignedProjectUsers", )
+                        </div>
+                    </div>
+                </div>*@
+
+                <div class="font-bold m-b-sm">
+                    Project participants
+                </div>
+
+            <div>
+                @Html.ActionLink("Edit Project Users", "EditAssignedProjectUsers", new { Id = Model.Id})
+            </div>
+                <div class="row">
+                    @*<div class="col-md-6">*@
+                    @foreach (var item in Model.User)
+
+                    {
+                        var helper = new UserRolesHelper();
+                        <div class="col-md-6">
+
+                            <div class="hpanel">
+                                <div class="panel-body text-center">
+                                    <p><strong><a href=@Url.Action("UserProfile", "Users", new { id = item.Id })>@item.DisplayName</a></strong></p>
+
+                                    @if (helper.IsUserInRole(item.Id.ToString(), "Admin"))
+                                    {
+                                        <p class="small">Administrator</p>
+                                    }
+                                    else if (helper.IsUserInRole(item.Id.ToString(), "Project Manager"))
+                                    {
+                                        <p class="small">Project Manager</p>
+                                    }
+                                    else if (helper.IsUserInRole(item.Id.ToString(), "Developer"))
+                                    {
+                                        <p class="small">
+                                            Developer
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="small">
+                                            Submitter
+                                        </p>
+                                    }
+                                    <img alt="logo" class="img-circle img-small" src="~/Images/a1.jpg">
+                                    <div class="m-t-sm">
+                                        <strong><a href=@Url.Action("UserProfile", "Users", new { id = item.Id })>@item.FirstName @item.LastName</a></strong>
+                                        @if (item.PhoneNumber == null)
+                                        { <p class="small">No phone number available</p>}
+                                        else
+                                        {
+                                            <p class="small">@item.PhoneNumber</p>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/chartjs/js")
+
+    <script type="text/javascript">
+
+
+        $(function () {
+
+            /**
+             * Options for Line chart
+             */
+            var lineData = {
+                labels: ["3 weeks ago", "2 weeks ago", "1 week ago", "Today"],
+                datasets: [
+                    {
+                        label: "Example dataset",
+                        fillColor: "rgba(98,203,49,0.5)",
+                        strokeColor: "rgba(98,203,49,0.7)",
+                        pointColor: "rgba(98,203,49,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(26,179,148,1)",
+                        data: [@Model.Ticket.Where(u => DateTime.UtcNow - u.Created > TimeSpan.FromDays(21)).Count().ToString(), @Model.Ticket.Where(u => DateTime.UtcNow - u.Created > TimeSpan.FromDays(14)).Count().ToString(), @Model.Ticket.Where(u => DateTime.UtcNow - u.Created > TimeSpan.FromDays(7)).Count().ToString(), @Model.Ticket.Count().ToString()]
+                    }
+                ]
+            };
+
+            var lineOptions = {
+                scaleShowGridLines: true,
+                scaleGridLineColor: "rgba(0,0,0,.05)",
+                scaleGridLineWidth: 1,
+                bezierCurve: false,
+                pointDot: true,
+                pointDotRadius: 3,
+                pointDotStrokeWidth: 1,
+                pointHitDetectionRadius: 20,
+                datasetStroke: false,
+                datasetStrokeWidth: 1,
+                datasetFill: true,
+                responsive: true,
+                tooltipTemplate: "<%= value %>",
+                showTooltips: true,
+                onAnimationComplete: function () {
+                    this.showTooltip(this.datasets[0].points, true);
+                },
+                tooltipEvents: []
+            };
+
+
+            var ctx = document.getElementById("lineOptions").getContext("2d");
+            var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
+
+
+        })
+
+</script>
+
+
+}

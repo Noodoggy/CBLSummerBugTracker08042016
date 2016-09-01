@@ -1,0 +1,252 @@
+﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.CodeFirst.RoleManagerViewModel>
+
+
+@section Styles{
+<link href="~/Content/lou-multi-select-a0f48de/css/multi-select.css" rel="stylesheet" />
+    }
+
+<div class="small-header transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <div id="hbreadcrumb" class="pull-right">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
+
+                    <li class="active">
+                        <span>Admininstrator</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Edit User Roles
+            </h2>
+            <small>double click to add or remove user from role</small>
+        </div>
+    </div>
+</div>
+
+<div class="content animate-panel">
+
+    <div class="row">
+        @{ var count = 0;}
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="hpanel plan-box hgreen active">
+                    <div class="panel-heading hbuilt text-center">
+                        <h4 class="font-bold">@item.RoleName</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted">
+                            double click user to add or remove from role
+                        </p>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="row">
+
+                                    <div class="col-sm-4">
+                                        @using (Html.BeginForm("RoleManagement", "Admin", FormMethod.Post, new {  RoleName = item.RoleName, RoleList = item.RoleList} ))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                         
+                                            @Html.ListBox("SelectedList", item.RoleList, htmlAttributes: new { @id="myselect" + count })
+                                          
+                                            <br />
+
+
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <div class="form-group">
+                                                        <div class="col-md-offset-2 col-md-10">
+                                                            <input type="submit" value="Save" class="btn btn-success btn-sm m-t-xs" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            count++;
+
+        }
+        </div>
+    </div>
+
+
+
+@*@section Styles {
+    @Styles.Render("~/bundles/xeditable/css")
+    @Styles.Render("~/bundles/select2/css")
+    @Styles.Render("~/bundles/touchspin/css")
+    @Styles.Render("~/bundles/datepicker/css")
+    @Styles.Render("~/bundles/bootstrapCheckbox/css")
+    @Styles.Render("~/bundles/datetimepicker/css")
+    @Styles.Render("~/bundles/clockpicker/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/moment/js")
+    @Scripts.Render("~/bundles/xeditable/js")
+    @Scripts.Render("~/bundles/select2/js")
+    @Scripts.Render("~/bundles/touchspin/js")
+    @Scripts.Render("~/bundles/datepicker/js")
+    @Scripts.Render("~/bundles/datetimepicker/js")
+    @Scripts.Render("~/bundles/clockpicker/js")*@
+
+
+    @*<script type="text/javascript">
+
+        $(function () {
+
+            $('#datepicker').datepicker();
+            $("#datepicker").on("changeDate", function (event) {
+                $("#my_hidden_input").val(
+                        $("#datepicker").datepicker('getFormattedDate')
+                )
+            });
+
+            $('#datapicker2').datepicker();
+            $('#datepicker .input-group.date').datepicker({});
+            $('#datepicker .input-daterange').datepicker({});
+
+            $("#demo1").TouchSpin({
+                min: 0,
+                max: 100,
+                step: 0.1,
+                decimals: 2,
+                boostat: 5,
+                maxboostedstep: 10,
+            });
+
+            $("#demo2").TouchSpin({
+                verticalbuttons: true
+            });
+
+            $("#demo3").TouchSpin({
+                postfix: '%'
+            });
+
+            $("#demo4").TouchSpin({
+                postfix: "a button",
+                postfix_extraclass: "btn btn-default"
+            });
+
+            $(".js-source-states").select2();
+            $(".js-source-states-2").select2();
+
+            //turn to inline mode
+            $.fn.editable.defaults.mode = 'inline';
+
+            //defaults
+            $.fn.editable.defaults.url = '#';
+
+            //editables
+            $('#username').editable({
+                url: '#',
+                type: 'text',
+                pk: 1,
+                name: 'username',
+                title: 'Enter username'
+            });
+
+            $('#firstname').editable({
+                validate: function (value) {
+                    if ($.trim(value) == '') return 'This field is required';
+                }
+            });
+
+            $('#sex').editable({
+                prepend: "not selected",
+                source: [
+                    { value: 1, text: 'Male' },
+                    { value: 2, text: 'Female' }
+                ],
+                display: function (value, sourceData) {
+                    var colors = { "": "gray", 1: "green", 2: "blue" },
+                            elem = $.grep(sourceData, function (o) { return o.value == value; });
+
+                    if (elem.length) {
+                        $(this).text(elem[0].text).css("color", colors[value]);
+                    } else {
+                        $(this).empty();
+                    }
+                }
+            });
+
+            $('#dob').editable();
+
+            $('#event').editable({
+                placement: 'right',
+                combodate: {
+                    firstItem: 'name'
+                }
+            });
+
+            $('#comments').editable({
+                showbuttons: 'bottom'
+            });
+
+            $('#fruits').editable({
+                pk: 1,
+                limit: 3,
+                source: [
+                    { value: 1, text: 'banana' },
+                    { value: 2, text: 'peach' },
+                    { value: 3, text: 'apple' },
+                    { value: 4, text: 'watermelon' },
+                    { value: 5, text: 'orange' }
+                ]
+            });
+
+            $('#user .editable').on('hidden', function (e, reason) {
+                if (reason === 'save' || reason === 'nochange') {
+                    var $next = $(this).closest('tr').next().find('.editable');
+                    if ($('#autoopen').is(':checked')) {
+                        setTimeout(function () {
+                            $next.editable('show');
+                        }, 300);
+                    } else {
+                        $next.focus();
+                    }
+                }
+            });
+
+            // ClockPicker
+            $('.clockpicker').clockpicker({ autoclose: true });
+
+            // DateTimePicker
+            $('#datetimepicker1').datetimepicker();
+
+        });
+
+    </script>*@
+
+
+@section Scripts {
+<script src="~/Content/lou-multi-select-a0f48de/js/jquery.multi-select.js"></script>
+<script>
+    $(function(){
+        $('#myselect0').multiSelect();
+    }) 
+
+    $(function(){
+       
+        $('#myselect1').multiSelect();
+}) 
+
+
+    $(function(){
+
+        $('#myselect2').multiSelect();
+    })
+</script>
+    }
+
+@*}*@

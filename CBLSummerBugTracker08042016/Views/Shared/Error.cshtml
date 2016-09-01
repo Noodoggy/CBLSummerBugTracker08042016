@@ -1,9 +1,15 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
-
-@{
-    ViewBag.Title = "Error";
+﻿@{
+    Layout = "~/Views/Shared/_Layout_Blank.cshtml";
+    ViewBag.Title = "Error_One";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="error-container">
+    <i class="pe-7s-way text-success big-icon"></i>
+    <h1>404</h1>
+    <strong>Page Not Found</strong>
+    <p>
+        Sorry, but the page you are looking for has note been found. Try checking the URL for error, then hit the refresh button on your browser or try found something else in our app.
 
+    </p>
+    <a href="@Url.Action("Index", "Dashboard")" class="btn btn-xs btn-success">Go back to dashboard</a>
+</div>

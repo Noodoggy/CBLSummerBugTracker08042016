@@ -26,18 +26,18 @@ namespace CBLSummerBugTracker08042016.Controllers
         {
             UserRolesHelper helper = new UserRolesHelper();
             var currentUser = db.Users.Find(System.Web.HttpContext.Current.User.Identity.GetUserId());      //get current user id
-            var projectList = new List<Project>();
+            var projectList = new ProjectIndexViewModel();
            
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Admin"))                                   
             {
                 ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name");                      //if admin, allow all projects 
 
-                projectList = db.Projects.ToList();
+                projectList.ProjectList = db.Projects.ToList();
             }
             else
             {
                 ViewBag.ProjectId = new SelectList(currentUser.Project, "Id", "Name");              //else, only projects assigned to
-                projectList = currentUser.Project.ToList();
+                projectList.ProjectList = currentUser.Project.ToList();
             }
             return View(projectList);
         }
@@ -79,8 +79,10 @@ namespace CBLSummerBugTracker08042016.Controllers
             
             if (ModelState.IsValid)
             {
-                project.Created = new DateTimeOffset(DateTime.Now);                         
-                db.Projects.Add(project);
+                var createProject = new Project();
+                createProject.Created = new DateTimeOffset(DateTime.Now);
+                createProject.Name = project.Name;                  
+                db.Projects.Add(createProject);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -178,7 +180,7 @@ namespace CBLSummerBugTracker08042016.Controllers
         model.ProjectName = project.Name;                                               //insert project data
         model.Id = project.Id;                                                           //insert project id
         model.selected = helper.ListProjectUsers(Id).ToArray();                         //users on project to array of selected for multiselect list
-
+            model.Project = project;
         model.users = new MultiSelectList(db.Users,"Id", "DisplayName", model.selected);        //mulitselect list with names and selected as users on project
 
 

@@ -1,53 +1,71 @@
-﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.ApplicationUser>
-@{
-    ViewBag.Title = "ListUsers";
-}
+﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.CodeFirst.AdminUserViewModel>
+@using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
 
-<h2>ListUsers</h2>
+<div class="col-md-11 col-md-offset-1">
+    @{ var counter = 3;
+        var helper = new UserRolesHelper();}
+    @foreach (var item in Model)
+                {
+                    string newrow = "";
+                    if (counter % 3 == 0) { newrow = "row"; }
+                    if (!helper.IsUserInRole(item.Id, "Admin"))                     /*comment out this if statement to allow edits of admin*/
+                    {
+        <div class="@newrow">
+            <div class="col-lg-4">
+                <div class="hpanel">
+                    <div class="panel-heading hbuilt">
+                        <div class="panel-tools">
+                            <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                            <a class="closebox"><i class="fa fa-times"></i></a>
+                        </div>
+                        <h4>@Html.ActionLink(item.Name, "UserProfile", "Users", new { id = item.Id }, null)</h4>
+                    </div>
+                    <div class="panel-body">
+
+                        <table class="table">
+                            <tr>
+                                <td class="col-md-3">
+                                    @foreach (var role in item.selected)
+                                        {
+                                        <button class="btn-success"> @Html.DisplayFor(model => role)</button>
+                                    }
+                                </td>
+                                <td class="col-md-3">
+                                    <h4>@Html.ActionLink("Edit Roles", "EditUsers", new { id = item.Id })</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+            counter++;
+        }
+    }
+</div>
 
 
-<table class="table">
-    <tr>
-        <td class="col-md-3">
-            <h3>@Html.DisplayNameFor(model => model.FirstName)</h3>
-        </td>
-        <td class="col-md-3">
-            <h3>@Html.DisplayNameFor(model => model.LastName)</h3>
-        </td>
-        <td class="col-md-3">
-            <h3>@Html.DisplayNameFor(model => model.DisplayName)</h3>
-        </td>
-        <td class="col-md-3">
-            <h3>@Html.DisplayNameFor(model => model.Roles)</h3>
-        </td>
-        <td class="col-md-3">
-            <h3>Edit User Roles</h3>
-        </td>
-    </tr>
-</table>
+@*code to make panels draggable*@
+    @*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryui/js")
 
-@foreach (var item in Model)
-{
-    var roles = Roles.GetRolesForUser();
-    <table class="table">
-        <tr>
-            <td class="col-md-3">
-                <h4>@Html.DisplayFor(model => item.FirstName)</h4>
-            </td>
-            <td class="col-md-3">
-                <h4>@Html.DisplayFor(model => item.LastName)</h4>
-            </td>
-            <td class="col-md-3">
-                <h4>@Html.DisplayFor(model => item.DisplayName)</h4>
-            </td>
-            <td class="col-md-3">
-                <h4>@Html.DisplayFor(model => item.Roles)</h4>
-            </td>
-            <td class="col-md-3">
-                <h4>@Html.ActionLink("Edit User Roles", "EditUsers", new { id = item.Id })</h4>
-            </td>
-        </tr>
-    </table>
+        <script type="text/javascript">
 
-}
-<i class="fa fa-folder-open"></i><i class="fa  fa-pencil"></i><b>@Html.ActionLink("Administrator Dashboard", "Index", "Admin")</b>
+            $(function () {
+
+                var element = "[class*=col]";
+                var handle = ".panel-body";
+                var connect = "[class*=col]";
+                $(element).sortable(
+                        {
+                            handle: handle,
+                            connectWith: connect,
+                            tolerance: 'pointer',
+                            forcePlaceholderSize: true,
+                            opacity: 0.8
+                        })
+                        .disableSelection();
+
+            });
+        </script>
+    }*@

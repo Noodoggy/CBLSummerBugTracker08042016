@@ -35,7 +35,7 @@ namespace CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
             return result.Succeeded;
         }
 
-        public ICollection<ApplicationUser> UsersInRole(string roleName)
+        public IEnumerable<ApplicationUser> UsersInRole(string roleName)
         {
             var resultList = new List<ApplicationUser>();
             var List = manager.Users.ToList();

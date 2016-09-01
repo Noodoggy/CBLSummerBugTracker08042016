@@ -120,15 +120,27 @@
 @*}*@
 
 
-<!--jQuery-->
-<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-@*@Scripts.Render("~/bundles/jquery")*@
-
-<!--DataTables-->
-<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
 
 
-<script>
-    $('#ticket_table').DataTable();
-</script>
 
+@section Styles {
+    @Styles.Render("~/bundles/fooTable/css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/fooTable/js")
+
+    <script type="text/javascript">
+
+        $(function () {
+
+        // Initialize Example 1
+        $('#example1').footable();
+
+        // Initialize Example 2
+        $('#example2').footable();
+
+        });
+
+    </script>
+}

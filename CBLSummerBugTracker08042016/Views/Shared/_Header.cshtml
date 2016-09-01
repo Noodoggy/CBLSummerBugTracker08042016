@@ -1,0 +1,155 @@
+﻿
+<div class="color-line">
+</div>
+<div id="logo" class="light-version">
+    <span>
+        ENTOMIS
+    </span>
+</div>
+<nav role="navigation">
+    <div class="header-link hide-menu tooltip-demo text-center" data-toggle="tooltip" data-placement="top" title="Click to hide side navigation"><i class="fa fa-bars" ></i></div>
+    @*<div class="small-logo">
+        <span class="text-primary">Bug Tracker</span>
+    </div>*@
+
+    <form role="search" class="navbar-form-custom" method="post" action="#">
+        <div class="form-group">
+            <input type="text" placeholder="Search something special" class="form-control" name="search">
+        </div>
+    </form>
+    <div class="mobile-menu">
+        <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
+            <i class="fa fa-chevron-down"></i>
+        </button>
+        <div class="collapse mobile-navbar" id="mobile-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a class="" href="@Url.Action("Login", "Account")">Login</a>
+                </li>
+                <li>
+                    <a class="" href="@Url.Action("Register", "Account")">Logout</a>
+                </li>
+                <li>
+                    <a class="" href="@Url.Action("UserProfile", "Manage")">Profile</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-right">
+        <ul class="nav navbar-nav no-borders">
+            @*<li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                    <i class="pe-7s-speaker"></i>
+                    <span class="label label-success">4</span>    @*add a counter here of the number of notifications*@
+                @*</a>
+                <ul class="dropdown-menu hdropdown notification animated flipInX">
+                    <li>
+                        <a>
+                            <span class="label label-success">NEW</span> It is a long established.
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <span class="label label-warning">WAR</span> There are many variations.
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            <span class="label label-danger">ERR</span> Contrary to popular belief.
+                        </a>
+                    </li>
+                    <li class="summary"><a href="#">See all notifications</a></li>
+                </ul>
+            </li>*@
+            <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                    <i class="pe-7s-keypad"></i>
+                                
+                </a>
+                <div class="dropdown-menu hdropdown bigmenu animated flipInX">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Index", "Admin")">
+                                        <i class="pe pe-7s-users text-success"></i>
+                                        <h5>Roles</h5>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Index", "Projects")">
+                                        <i class="pe pe-7s-portfolio text-info"></i>
+                                        <h5>Projects</h5>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("TicketManagement", "Tickets")">
+                                        <i class="pe pe-7s-mail text-warning"></i>
+                                        <h5>Tickets</h5>
+                                    </a>
+                                </td>
+
+
+
+                                <td>
+                                    <a href="@Url.Action("UserProfile", "Users")">
+                                        <i class="pe pe-7s-comment text-info"></i>
+                                        <h5>Users</h5>
+                                    </a>
+                                </td>
+                            </tr>
+                                
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+            @*<li class="dropdown">
+                <a class="dropdown-toggle label-menu-corner" href="#" data-toggle="dropdown">
+                    <i class="pe-7s-mail"></i>
+                    <span class="label label-success">4</span>
+                </a>
+                <ul class="dropdown-menu hdropdown animated flipInX">
+                    <div class="title">
+                        You have 4 new messages
+                    </div>
+                    <li>
+                        <a>
+                            It is a long established.
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            There are many variations.
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            Lorem Ipsum is simply dummy.
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                            Contrary to popular belief.
+                        </a>
+                    </li>
+                    <li class="summary"><a href="#">See All Messages</a></li>
+                </ul>
+            </li>*@
+            @*<li>
+                <a href="#" id="sidebar" class="right-sidebar-toggle">
+                    <i class="pe-7s-upload pe-7s-news-paper"></i>
+                </a>
+            </li>*@
+            <li>
+                <small>
+                @Html.Partial("_LoginPartial")
+                    @*<i class="pe-7s-upload pe-rotate-90"></i>*@
+               </small>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+

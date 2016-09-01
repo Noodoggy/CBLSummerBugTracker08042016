@@ -1,0 +1,286 @@
+﻿@model CBLSummerBugTracker08042016.Models.CodeFirst.UserProfileViewModel
+@using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
+@using CBLSummerBugTracker08042016.Models
+@{
+    ViewBag.Title = "Profile page";
+}
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                    <li class="active">
+                        <a href="@Url.Action("UserProfile", "Manage")">User Profile</a>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Profile
+            </h2>
+            <small>@Model.Id.DisplayName</small>
+        </div>
+    </div>
+</div>
+
+<div class="content animate-panel">
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="hpanel hgreen">
+                <div class="panel-body">
+                    <div class="pull-right text-right">
+                        <div class="btn-group">
+                            <i class="fa fa-facebook btn btn-default btn-xs"></i>
+                            <i class="fa fa-twitter btn btn-default btn-xs"></i>
+                            <i class="fa fa-linkedin btn btn-default btn-xs"></i>
+                        </div>
+                    </div>
+                    <img alt="logo" class="img-circle m-b m-t-md" src="~/Images/profile.jpg">
+                    <h3><a href="">@Model.Id.FirstName @Model.Id.LastName</a></h3>
+                    <div class="text-muted font-bold m-b-xs">@Model.Id.PhoneNumber</div>
+                    <p>
+                        @*placeholder for a short description from user*@
+                    </p>
+                    <div class="progress m-t-xs full progress-small">
+                        <div style="width: 65%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="65" role="progressbar" class=" progress-bar progress-bar-success">
+                            <span class="sr-only">35% Complete (success)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-right border-left">
+                    <section id="map">
+                        <div id="map1" style="height: 200px"></div>
+                    </section>
+                </div>
+                <div class="panel-body">
+                    <dl>
+                        <dt>Skills</dt>
+                        <dd>placeholder for users to list skills</dd>
+                    </dl>
+                </div>
+                <div class="panel-footer contact-footer">
+                    <div class="row">
+                        <div class="col-md-4 border-right">
+                            <div class="contact-stat"><span>Projects: </span> <strong>@Model.Id.Project.Count</strong></div>
+                        </div>
+                        <div class="col-md-4 border-right">
+                            <div class="contact-stat"><span>Tickets: </span> <strong>@(Model.MyTickets.Count + Model.ProjectTickets.Count + Model.AssignedTickets.Count)</strong></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="contact-stat"><span>Notifications: </span> <strong>@Model.Id.TicketNotification.Count</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="hpanel">
+                <div class="hpanel">
+
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#tab-1">Projects</a></li>
+                        <li class=""><a data-toggle="tab" href="#tab-2">Tickets</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="panel-body">
+
+
+
+                                <input type="text" class="form-control input-sm m-b-md" id="filter" placeholder="Search in table">
+                                <table id="example1" class="footable table table-stripped toggle-arrow-tiny" data-page-size="10" data-filter=#filter>
+                                    <thead>
+                                        <tr>
+                                            <th data-toggle="true">
+                                                Project
+                                            </th>
+                                            <th>
+                                                Created
+                                            </th>
+                                            <th>
+                                                
+                                            </th>
+                                            <th data-hide="all">Project Manager</th>
+                                            <th data-hide="all">Developers</th>
+                                            <th data-hide="all"># of Tickets</th>
+                                            <th data-hide="all"># of Pending Tickets</th>
+                                            <th data-hide="all"># of Open Tickets</th>
+                                            <th data-hide="all"># of Closed Tickets</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Id.Project.OrderByDescending(d => d.Created))
+                                        {
+                                            var helper2 = new UserRolesHelper();
+                                            var helper = new UserProjectsHelper();
+
+                                            //var isdev = helper2.IsUserInRole(item. "Project Manager");
+                                            //var pm = helper2.IsUserInRole(item.User, "Developer");
+                                            //var dev = helper.ListProjectUsers(item.Id).Where(d => isdev).ToList();
+                                            var pend = item.Ticket.Where(s => s.TicketStatus.Name == "Pending").Count().ToString();
+                                            var open = item.Ticket.Where(s => s.TicketStatus.Name == "Open").Count().ToString();
+                                            var closed = item.Ticket.Where(s => s.TicketStatus.Name == "Closed").Count().ToString();
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Created)
+                                                </td>
+                                                <td>
+
+
+
+                                                    @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                                    {
+                                                        @Html.ActionLink("Edit ", "Edit", new { id = item.Id }) @: |
+                                    }
+                                                    @Html.ActionLink("Details ", "Details", new { id = item.Id })
+
+                                                </td>
+                                                <td>
+                                                    @*@Html.DisplayFor(model => pm)*@
+                                                </td>
+                                                <td>
+                                                    @*@Html.DisplayFor(model => dev)*@
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => item.Ticket.Count)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => pend)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => open)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => closed)
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5">
+                                                <ul class="pagination pull-right"></ul>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="panel-body">
+                                <div class="hpanel">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#tab-3"> <i class="fa fa-laptop"></i>My Tickets</a></li>
+                                        <li class=""><a data-toggle="tab" href="#tab-4"><i class="fa fa-desktop"></i>My Assigned Tickets</a></li>
+                                        <li class=""><a data-toggle="tab" href="#tab-5"><i class="fa fa-database"></i>My Project Tickets</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="tab-3" class="tab-pane active">
+                                            <div class="panel-body">
+                                                
+                                                @Html.Partial("_MyTickets", Model.MyTickets)
+
+                                            </div>
+                                        </div>
+                                        <div id="tab-4" class="tab-pane">
+                                            <div class="panel-body">
+                                                
+                                                @Html.Partial("_AssignedTickets", Model.AssignedTickets)
+
+                                            </div>
+                                        </div>
+                                        <div id="tab-5" class="tab-pane">
+                                            <div class="panel-body">
+                                                
+                                                @Html.Partial("_MyProjectTickets", Model.ProjectTickets)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+            </div>
+                            </div>
+                        </div>
+</div>
+    </div>
+  
+
+<!--
+ You need to include this script on any page that has a Google Map.
+ When using Google Maps on your own site you MUST signup for your own API key at:
+ https://developers.google.com/maps/documentation/javascript/tutorial#api_key
+ After your sign up replace the key in the URL below..
+-->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQTpXj82d8UpCi97wzo_nKXL7nYrd4G70"></script>
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // When the window has finished loading google map
+        google.maps.event.addDomListener(window, 'load', init);
+
+        function init() {
+            // Options for Google map
+            // More info see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
+            var mapOptions1 = {
+                zoom: 14,
+                center: new google.maps.LatLng(40.6700, -73.9400),
+                // Style for Google Maps
+                styles: [{ "featureType": "landscape", "stylers": [{ "saturation": -100 }, { "lightness": 65 }, { "visibility": "on" }] }, { "featureType": "poi", "stylers": [{ "saturation": -100 }, { "lightness": 51 }, { "visibility": "simplified" }] }, { "featureType": "road.highway", "stylers": [{ "saturation": -100 }, { "visibility": "simplified" }] }, { "featureType": "road.arterial", "stylers": [{ "saturation": -100 }, { "lightness": 30 }, { "visibility": "on" }] }, { "featureType": "road.local", "stylers": [{ "saturation": -100 }, { "lightness": 40 }, { "visibility": "on" }] }, { "featureType": "transit", "stylers": [{ "saturation": -100 }, { "visibility": "simplified" }] }, { "featureType": "administrative.province", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "labels", "stylers": [{ "visibility": "on" }, { "lightness": -25 }, { "saturation": -100 }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "hue": "#ffff00" }, { "lightness": -25 }, { "saturation": -97 }] }]
+            };
+
+            // Get all html elements for map
+            var mapElement1 = document.getElementById('map1');
+
+            // Create the Google Map using elements
+            var map1 = new google.maps.Map(mapElement1, mapOptions1);
+        }
+
+    </script>
+    
+
+    @Scripts.Render("~/bundles/fooTable/js")
+
+    <script type="text/javascript">
+
+        $(function () {
+
+        // Initialize Example 1
+        $('#example1').footable();
+
+        // Initialize Example 2
+        $('#example2').footable();
+
+            // Initialize Example 3
+        $('#example3').footable();
+
+            // Initialize Example 4
+        $('#example4').footable();
+
+        });
+
+    </script>
+    }

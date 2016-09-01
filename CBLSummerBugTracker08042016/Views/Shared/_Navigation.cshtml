@@ -1,0 +1,79 @@
+﻿@using CBLSummerBugTracker08042016.Models.CodeFirst.Helpers
+@using System.Web.Security
+@{ var helper = new UserProjectsHelper();}
+
+    <div id="navigation">
+        <div class="profile-picture">
+            <a href="@Url.Action("UserProfile", "Users")">
+                <img src="~/Images/profile.jpg" class="img-circle m-b" alt="logo">
+            </a>
+
+            <div class="stats-label text-color">
+                <small><span class="font-extra-bold font-uppercase">@User.Identity.Name</span></small>
+
+                <div class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+
+                        @if (User.IsInRole("Submitter") && (!User.IsInRole("Developer") && !User.IsInRole("Project Manager")))
+                        { <small class="text-muted">Submitter <b class="caret"></b></small> }
+                        else if (User.IsInRole("Developer") && !User.IsInRole("Project Manager"))
+                        { <small class="text-muted">Developer <b class="caret"></b></small> }
+                        else if (User.IsInRole("Project Manager"))
+                        {<small class="text-muted">Project Manager <b class="caret"></b></small>}
+                        else if (User.IsInRole("Admin"))
+                        {<small class="text-muted">Admin <b class="caret"></b></small>}
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="@Url.Action("UserProfile", "Users")">Profile</a></li>
+                        <li><a href="@Url.Action("Index", "Manage")">Manage Account</a></li>
+                    </ul>
+                </div>
+                <div id="sparkline1" class="small-chart m-t-sm"></div>
+                <div>
+                    <h4 class="font-extra-bold m-b-xs">
+                        @*@{ var userId = User.Identity.ToString();             //trying to access current users projects
+                            helper.ListUserProjects(userId).SelectMany(p => p.User = userId}    //to get their tickets per project count*@
+                    </h4>
+                    <small class="text-muted">Number of Tickets Assigned Per Project</small>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav metismenu" id="side-menu">
+            <li class="@Html.IsSelected(controller: "Home")">
+                <a href="@Url.Action("Dashboard", "Home")"> <span class="nav-label">Dashboard</span> <span class="label label-success pull-right"></span> </a>
+            </li>
+            <li class="@Html.IsSelected(controller: "Users")">
+                <a href="#"><span class="nav-label">User Profile</span><span class="fa arrow"></span> </a>
+                <ul class="nav nav-second-level">
+                    <li class="@Html.IsSelected(action: "UserProfile")"><a href="@Url.Action("UserProfile", "Users")">User Profile</a></li>
+                    <li class="@Html.IsSelected(action: "Index")"><a href="@Url.Action("Index", "Manage")">Manage Your Account</a></li>
+
+                </ul>
+            </li>
+            <li class="@Html.IsSelected(controller: "Tickets")">
+                <a href="#"><span class="nav-label">Tickets</span><span class="fa arrow"></span> </a>
+                <ul class="nav nav-second-level">
+                    <li class="@Html.IsSelected(action: "MyTickets")"><a href="@Url.Action("TicketManagement", "Tickets")">MyTickets</a></li>
+                    <li class="@Html.IsSelected(action: "AssignedTickets")"><a href="@Url.Action("TicketManagement", "Tickets")">Assigned Tickets</a></li>
+                    <li class="@Html.IsSelected(action: "MyProjectTickets")"><a href="@Url.Action("TicketManagement", "Tickets")">My Project Tickets</a></li>
+
+                </ul>
+            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+            {
+                <li class="@Html.IsSelected(controller: "Projects")">
+                    <a href="@Url.Action("Index", "Projects")">Projects</a>
+                </li>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="@Html.IsSelected(controller: "Admin")">
+                    <a href="@Url.Action("Index", "Admin")"> <span class="nav-label">Admin</span> <span class="label label-success pull-right"></span> </a>
+                </li>
+            }
+
+
+
+        </ul>
+    </div>
