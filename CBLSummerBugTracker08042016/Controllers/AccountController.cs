@@ -77,13 +77,49 @@ namespace CBLSummerBugTracker08042016.Controllers
                 return View(model);
             }
 
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Dashboard", "Home");
+                case SignInStatus.LockedOut:
+                    return View("Lockout");
+                case SignInStatus.RequiresVerification:
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(model);
+            }
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Login(string name, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            LoginViewModel model = new LoginViewModel();
+            var user = await UserManager.FindByNameAsync(name);
+            if (user.Email == "submitter@submitter.com") { model.Email = user.Email; model.Password = "Kissme^3"; model.RememberMe = false; }
+            else if (user.Email == "Developer@Developer.com") { model.Email = user.Email; model.Password = "Kissme^3"; model.RememberMe = false; }
+            else if (user.Email == "ProjectManager@ProjectManager.com") { model.Email = user.Email; model.Password = "Kissme^3"; model.RememberMe = false; }
+            else if (user.Email == "Admin@Admin.com") { model.Email = user.Email; model.Password = "Kissme^3"; model.RememberMe = false; }
+
+
+
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("Dashboard", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

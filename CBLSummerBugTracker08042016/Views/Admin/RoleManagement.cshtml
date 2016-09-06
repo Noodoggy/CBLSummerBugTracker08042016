@@ -1,19 +1,28 @@
-﻿@model IEnumerable<CBLSummerBugTracker08042016.Models.CodeFirst.RoleManagerViewModel>
+﻿@model IList<CBLSummerBugTracker08042016.Models.CodeFirst.RoleManagerViewModel>
 
 
 @section Styles{
-<link href="~/Content/lou-multi-select-a0f48de/css/multi-select.css" rel="stylesheet" />
-    }
+    <link href="~/Content/lou-multi-select-a0f48de/css/multi-select.css" rel="stylesheet" />
+}
+@{
+    ViewBag.Title = "Role Management";
+}
 
-<div class="small-header transition animated fadeIn">
+<div class="normalheader transition animated fadeIn">
     <div class="hpanel">
         <div class="panel-body">
-            <div id="hbreadcrumb" class="pull-right">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
                 <ol class="hbreadcrumb breadcrumb">
                     <li><a href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
 
                     <li class="active">
-                        <span>Admininstrator</span>
+                        <span>Role Management</span>
                     </li>
                 </ol>
             </div>
@@ -31,33 +40,36 @@
         @{ var count = 0;}
         @foreach (var item in Model)
         {
-            <div class="col-md-4">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="hpanel plan-box hgreen active">
                     <div class="panel-heading hbuilt text-center">
                         <h4 class="font-bold">@item.RoleName</h4>
                     </div>
                     <div class="panel-body">
-                        <p class="text-muted">
+                        <p class="text-muted" style="text-align:center">
                             double click user to add or remove from role
                         </p>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="row">
 
-                                    <div class="col-sm-4">
-                                        @using (Html.BeginForm("RoleManagement", "Admin", FormMethod.Post, new {  RoleName = item.RoleName, RoleList = item.RoleList} ))
+                                    <div class="col-md-4 col-md-offset-3">
+                                        @using (Html.BeginForm())
                                         {
                                             @Html.AntiForgeryToken()
-                                         
-                                            @Html.ListBox("SelectedList", item.RoleList, htmlAttributes: new { @id="myselect" + count })
-                                          
+                                            @*@Html.HiddenFor(m => item.RoleName)*@
+                                            <input class="hidden" id="RoleName" name="RoleName" value="@item.RoleName" />
+                                           
+
+                                            @Html.ListBox("SelectedList", item.RoleList, htmlAttributes: new { @id = "myselect" + count })
+
                                             <br />
 
 
                                             <div class="row">
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <div class="col-md-offset-2 col-md-10">
+                                                        <div class="col-md-12">
                                                             <input type="submit" value="Save" class="btn btn-success btn-sm m-t-xs" />
                                                         </div>
                                                     </div>
@@ -76,32 +88,32 @@
             count++;
 
         }
-        </div>
     </div>
+</div>
 
 
 
 @*@section Styles {
-    @Styles.Render("~/bundles/xeditable/css")
-    @Styles.Render("~/bundles/select2/css")
-    @Styles.Render("~/bundles/touchspin/css")
-    @Styles.Render("~/bundles/datepicker/css")
-    @Styles.Render("~/bundles/bootstrapCheckbox/css")
-    @Styles.Render("~/bundles/datetimepicker/css")
-    @Styles.Render("~/bundles/clockpicker/css")
-}
+        @Styles.Render("~/bundles/xeditable/css")
+        @Styles.Render("~/bundles/select2/css")
+        @Styles.Render("~/bundles/touchspin/css")
+        @Styles.Render("~/bundles/datepicker/css")
+        @Styles.Render("~/bundles/bootstrapCheckbox/css")
+        @Styles.Render("~/bundles/datetimepicker/css")
+        @Styles.Render("~/bundles/clockpicker/css")
+    }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/moment/js")
-    @Scripts.Render("~/bundles/xeditable/js")
-    @Scripts.Render("~/bundles/select2/js")
-    @Scripts.Render("~/bundles/touchspin/js")
-    @Scripts.Render("~/bundles/datepicker/js")
-    @Scripts.Render("~/bundles/datetimepicker/js")
-    @Scripts.Render("~/bundles/clockpicker/js")*@
+    @section Scripts {
+        @Scripts.Render("~/bundles/moment/js")
+        @Scripts.Render("~/bundles/xeditable/js")
+        @Scripts.Render("~/bundles/select2/js")
+        @Scripts.Render("~/bundles/touchspin/js")
+        @Scripts.Render("~/bundles/datepicker/js")
+        @Scripts.Render("~/bundles/datetimepicker/js")
+        @Scripts.Render("~/bundles/clockpicker/js")*@
 
 
-    @*<script type="text/javascript">
+@*<script type="text/javascript">
 
         $(function () {
 
@@ -230,23 +242,23 @@
 
 
 @section Scripts {
-<script src="~/Content/lou-multi-select-a0f48de/js/jquery.multi-select.js"></script>
-<script>
-    $(function(){
-        $('#myselect0').multiSelect();
-    }) 
+    <script src="~/Content/lou-multi-select-a0f48de/js/jquery.multi-select.js"></script>
+    <script>
+        $(function () {
+            $('#myselect0').multiSelect();
+        })
 
-    $(function(){
-       
-        $('#myselect1').multiSelect();
-}) 
+        $(function () {
+
+            $('#myselect1').multiSelect();
+        })
 
 
-    $(function(){
+        $(function () {
 
-        $('#myselect2').multiSelect();
-    })
-</script>
-    }
+            $('#myselect2').multiSelect();
+        })
+    </script>
+}
 
 @*}*@

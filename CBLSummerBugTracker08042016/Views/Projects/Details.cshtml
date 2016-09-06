@@ -159,22 +159,32 @@
                     </p>
                     <div class="row">
                         <div class="col-xs-6">
-                            <small class="stat-label">Tickets Open</small>
-                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                            <small class="stat-label">Tickets Pending</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Pending").Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
                         </div>
                         <div class="col-xs-6">
                             <small class="stat-label">Last week</small>
-                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Pending").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Tickets Open</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <small class="stat-label">Last week</small>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Open").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-6">
                             <small class="stat-label">Tickets Closed</small>
-                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
                         </div>
                         <div class="col-xs-6">
                             <small class="stat-label">Last week</small>
-                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa fa-level-up text-success"></i></h4>
+                            <h4>@Model.Ticket.Where(s => s.TicketStatus.Name == "Closed").Where(u => DateTime.UtcNow - u.Updated > TimeSpan.FromDays(7)).Count().ToString()<i class="fa @*fa-level-up*@ text-success"></i></h4>
                         </div>
                     </div>
                 </div>

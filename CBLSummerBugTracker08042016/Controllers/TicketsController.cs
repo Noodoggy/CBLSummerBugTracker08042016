@@ -249,7 +249,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                 {
                     ViewBag.TicketStatusId = new SelectList(db.TicketStatuses.Where(t => t.Id == ticket.TicketStatusId).AsEnumerable(), "Id", "Name");
                 }
-                else if ((helper.IsUserInRole(currentUserId, "Admin")) || (helper.IsUserInRole(currentUserId, "Project Manager")))
+                if ((helper.IsUserInRole(currentUserId, "Admin")) || (helper.IsUserInRole(currentUserId, "Project Manager")))
                 {
                     ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
                 }
@@ -696,11 +696,19 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         public ActionResult MyProjectTickets([Bind(Include = "ProjectName, Id, tickets")] TicketViewModel model)
         {
+            UserRolesHelper helper = new UserRolesHelper();
             var currentUserId = User.Identity.GetUserId();
-            
-            var ticket = db.Users.Find(currentUserId).Project.SelectMany(p => p.Ticket);
+            var ticket = new List<Ticket>();
+            if (helper.IsUserInRole(currentUserId, "Admin"))
+            {
+                ticket = db.Tickets.ToList();
+            }
+            else
+            {
+                ticket = db.Users.Find(currentUserId).Project.SelectMany(p => p.Ticket).ToList();
+            }
             ViewBag.UserId = currentUserId;
-            return View(ticket.ToList());
+            return View(ticket);
         }
 
         protected override void Dispose(bool disposing)
@@ -727,7 +735,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                 tmvm.CreateTicket = new Models.CodeFirst.Ticket();
                 return View(tmvm);
             }
-
+            else
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Project Manager"))
             {
                 ViewBag.UserId = currentUserId;
@@ -738,6 +746,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                 //return View(currentUser.Project.SelectMany(p => p.Ticket).AsQueryable().Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType).ToList());               //tickets of projects assigned to user
 
             }
+            else
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Developer"))
             {
                 ViewBag.UserId = currentUserId;
@@ -746,6 +755,7 @@ namespace CBLSummerBugTracker08042016.Controllers
                 tmvm.CreateTicket = new Models.CodeFirst.Ticket();
                 return View(tmvm);       //tickets assigned to user;
             }
+            else
             if (helper.IsUserInRole(User.Identity.GetUserId(), "Submitter"))
             {
                 ViewBag.UserId = currentUserId;

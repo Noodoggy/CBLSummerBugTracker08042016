@@ -191,14 +191,14 @@ namespace CBLSummerBugTracker08042016.Controllers
     //POST Action
     [Authorize(Roles = "Admin, Project Manager")]
     [HttpPost]
-    public ActionResult EditAssignedProjectUsers([Bind(Include = "ProjectName, selected, Id, users")] ProjectUserListViewModel model)
+    public ActionResult EditAssignedProjectUsers([Bind(Include = "Id, Project, ProjectName, selected")] ProjectUserListViewModel changedUsers)
     {
         UserRolesHelper roles = new UserRolesHelper();
         UserProjectsHelper helper = new UserProjectsHelper();                                                    
         List<string> ListSelected = new List<string>();                                       //selected list of users to assign
-        List<string> ListToRemove = new List<string>(helper.ListProjectUsers(model.Id).ToArray());          //creates list of users assigned in Get Action 
+        List<string> ListToRemove = new List<string>(helper.ListProjectUsers(changedUsers.Id).ToArray());          //creates list of users assigned in Get Action 
 
-        foreach (var item in model.selected)                                                    //create selected list
+        foreach (var item in changedUsers.selected)                                                    //create selected list
             {
                 ListSelected.Add(item);
             }
@@ -211,9 +211,9 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         foreach (var item in ListSelected)                                          //action of adding to list
             {
-                if (!helper.IsUserOnProject(item, model.Id))                            //check to make sure not already assigned to project
+                if (!helper.IsUserOnProject(item, changedUsers.Id))                            //check to make sure not already assigned to project
                 {
-                    helper.AddUserToProject(item, model.Id);                             //add
+                    helper.AddUserToProject(item, changedUsers.Id);                             //add
                     if (!roles.IsUserInRole(item, "Submitter"))
                         {
                             roles.AddUserToRole(item, "Submitter");
@@ -223,15 +223,17 @@ namespace CBLSummerBugTracker08042016.Controllers
 
         foreach (var item in ListToRemove)                                          //action of removing from list
         {
-            if (helper.IsUserOnProject(item, model.Id))                             //check to make sure is assigned to project
+            if (helper.IsUserOnProject(item, changedUsers.Id))                             //check to make sure is assigned to project
             {
-                helper.RemoveUserFromProject(item, model.Id);                       //remove
+                helper.RemoveUserFromProject(item, changedUsers.Id);                       //remove
             }
         }
-
-        
-        model.selected = db.Users.Select(n => n.Id).ToArray();                      //update model.selected to reflect projectusers table
-        model.users = new MultiSelectList(db.Users, "Id", "DisplayName", model.selected);       //multiselect with selected for projectusers
+            var model = new ProjectUserListViewModel();
+            model.Id = changedUsers.Id;
+            model.Project = db.Projects.Find(changedUsers.Id);
+            model.ProjectName = model.Project.Name;
+            model.selected = db.Users.Select(n => n.Id).ToArray();                      //update model.selected to reflect projectusers table
+        model.users = new MultiSelectList(db.Users, "Id", "DisplayName", changedUsers.selected);       //multiselect with selected for projectusers
         db.SaveChanges();                                                                   
         return View(model);
     }

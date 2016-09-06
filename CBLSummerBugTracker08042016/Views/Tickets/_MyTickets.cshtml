@@ -100,19 +100,17 @@
 
                                         @Html.ActionLink("Details", "Details", new { id = item.Id })|
 
-                                        @if (User.IsInRole("Admin"))
+                                        @*@if (User.IsInRole("Admin"))
                                         {
                                           @: |  @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                        }
+                                        }*@
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
 
-                    <p>
-                        @Html.ActionLink("Back to List", "Index")
-                    </p>
+
 
 
 

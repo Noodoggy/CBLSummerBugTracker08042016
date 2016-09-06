@@ -65,8 +65,9 @@
 
     @*<script src="~/Scripts/jquery.multi-select.js"></script>*@
     <!-- Handler for local scripts -->
-    @RenderSection("scripts", required: false)
     @Scripts.Render("~/bundles/bootstrap/js")
     @Scripts.Render("~/bundles/homer/js")
+    @RenderSection("scripts", required: false)
+
 </body>
 

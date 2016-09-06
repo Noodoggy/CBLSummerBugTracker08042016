@@ -31,6 +31,7 @@ namespace CBLSummerBugTracker08042016.Controllers
             model.MyTickets = db.Tickets.Where(u => u.OwnerUserId == id).ToList();
             model.AssignedTickets = db.Tickets.Where(u => u.AssignedToUserId == id).ToList();
             model.ProjectTickets = model.Id.Project.SelectMany(p => p.Ticket).ToList();
+            ViewBag.UserId = model.Id;
             return View(model);
 
         }

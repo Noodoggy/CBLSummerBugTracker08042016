@@ -159,19 +159,60 @@ namespace CBLSummerBugTracker08042016.Controllers
         }
 
         [HttpPost]
-        public ActionResult RoleManagement([Bind(Include = "RoleName, RoleList, SelectedList")] RoleManagerViewModel model)
+        public ActionResult RoleManagement([Bind(Include = "RoleName, RoleList, SelectedList")] RoleManagerViewModel changedRoles)
         {
-            
-                foreach (var user in model.SelectedList)
+            List<string> notSelectedList = new List<string>();
+            foreach (var user in db.Users)                      //add all users to list
+            {
+                             //find Id
+                notSelectedList.Add(user.Id);                                //add to list
+            }
+            foreach (var userId in notSelectedList)
+            {
+                if (!changedRoles.SelectedList.Any(l => l == userId))
                 {
                     UserRolesHelper helper = new UserRolesHelper();
-                    var userId = db.Users.Find(user);
-                    helper.AddUserToRole(userId.Id, model.RoleName);
+                    var users = db.Users.Find(userId);
+                    helper.RemoveUserFromRole(users.Id, changedRoles.RoleName);
+                        }
+            }
+
+
+                foreach (var selectedUser in changedRoles.SelectedList)
+                {
+                    UserRolesHelper helper = new UserRolesHelper();
+                    var userId = db.Users.Find(selectedUser);
+                    helper.AddUserToRole(userId.Id, changedRoles.RoleName);
                 }
 
-            
-            return View();
-        }
+
+            //var roleList = new List<RoleManagerViewModel>();                                                                                   //var roleList = new List<RoleManagerViewModel>();
+            //var roles = new List<string>();                                                                             //var roles = new List<string>();
+            //foreach (var role in db.Roles)
+            //{
+            //    if (role.Name != "Admin")
+            //        roles.Add(role.Name);
+            //}
+
+            //foreach (var item in roles)
+            //{
+            //    UserRolesHelper helper = new UserRolesHelper();
+            //    RoleManagerViewModel editModel = new RoleManagerViewModel();
+            //    editModel.RoleName = item;
+
+            //    //var users = helper.UsersInRole(item).ToArray();
+
+            //    editModel.SelectedList = helper.UsersInRole(item).ToArray().Select(u => u.Id).ToArray();
+            //    editModel.RoleList = new MultiSelectList(db.Users, "Id", "DisplayName", editModel.SelectedList);
+
+            //    roleList.Add(editModel);
+            //}
+
+
+            return RedirectToAction("RoleManagement");
+
+
+           }
 
         }
 }

@@ -2,7 +2,31 @@
 @{
     ViewBag.Title = "Edit";
 }
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
 
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li><a href="@Url.Action("Dashboard", "Home")">Dashboard</a></li>
+                    <li><a href="@Url.Action("TicketManagement", "Tickets")">Dashboard</a></li>
+                    <li class="active">
+                        <span>Ticket Edit</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Ticket Edit:  @Model.Title
+            </h2>
+            <small>@Model.Description</small>
+        </div>
+    </div>
+</div>
 <h2>Edit</h2>
 <div class="normalheader transition animated fadeIn col-md-offset-3 col-md-6">
     <div class="hpanel">

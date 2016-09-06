@@ -22,9 +22,9 @@
                     <table id="example2" class="footable table table-stripped toggle-arrow-tiny" data-page-size="10" data-filter=#filter>
                         <thead>
                             <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.OwnerUser.DisplayName)
-                                </th>
+                                @*<th>
+                                    @Html.DisplayNameFor(model => model.OwnerUser)
+                                </th>*@
                                 @*<th>
                                         @Html.DisplayNameFor(model => model.TicketPriority)
                                     </th>
@@ -52,17 +52,19 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.AssignedToUser)
                                 </th>
-                                <th></th>
+                                <th>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td>
+                                    @*<td>
                                         @Html.HiddenFor(model => item.OwnerUserId)
                                         @Html.DisplayFor(modelItem => item.OwnerUser.DisplayName)
-                                    </td>
+                                    </td>*@
                                     @*<td>
                                             @Html.DisplayFor(modelItem => item.TicketPriority.Name)
                                         </td>
@@ -77,30 +79,34 @@
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Updated)
-                                        </td>
-                                        <td>*@
+                                        </td>*@
+                                        <td>
                                     @Html.DisplayFor(modelItem => item.Title)
-                                    @*</td>*@
+                                    </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Description)
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    <td><span>
+                                           @Html.DisplayFor(modelItem => item.Project.Name)
+                                        </span>
                                     </td>
+                                    <td><span>
+                                                @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
+                                    </span></td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
-                                    </td>
-                                    <td>
+@if (ViewBag.UserId.Id == item.AssignedToUserId || ViewBag.UserId.Id == item.OwnerUserId || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+{
+                                        <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })">Edit  |</a>
 
-                                        <a>@Url.Action("Edit","Tickets", new { id = item.Id })Edit  |</a>
-
-                                        <a>@Url.Action("Details", "Tickets", new { id = item.Id })Details</a>
-
-                                        @if (User.IsInRole("Admin"))
+                                        <a href="@Url.Action("Details", "Tickets", new { id = item.Id })">Details</a>
+}
+                                        @if (User.IsInRole(" Admin"))
                                         {
-                                           @: | <a>@Url.Action("Delete", "Tickets", new { id = item.Id })Delete</a>
+                                        @: |
+                                        <a href="@Url.Action("Delete", "Tickets", new { id = item.Id })">Delete</a>
                                         }
-</td>
+
+                                    </td>
                                 </tr>
                             }
                         </tbody>

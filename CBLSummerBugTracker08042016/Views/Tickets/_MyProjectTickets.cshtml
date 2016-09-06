@@ -92,23 +92,43 @@
                                         @Html.HiddenFor(model => item.AssignedToUserId)
                                         @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
                                     </td>*@
-                                    @if ((User.IsInRole("Admin")) || (User.IsInRole("Project Manager")) || (item.AssignedToUserId == ViewBag.UserId || (item.OwnerUserId == ViewBag.UserId)))
-                {
-                                        <td>
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                            @Html.ActionLink("Details", "Details", new { id = item.Id })
-                                            @if (User.IsInRole("Admin"))
+                                    <td>
+                                        @if ((User.IsInRole("Admin")) || (User.IsInRole("Project Manager")) || (item.OwnerUserId == ViewBag.UserId))
+                                        {
+
+                                            <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })">Edit  |</a>
+
+                                            <a href="@Url.Action("Details", "Tickets", new { id = item.Id })">Details</a>
+
+                                            if (User.IsInRole(" Admin"))
                                             {
-                                                @: | @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                                @: |
+                                                <a href="@Url.Action("Delete", "Tickets", new { id = item.Id })">Delete</a>
                                             }
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
+
+                                        }
+                                        else
+                                        if ((item.AssignedToUserId != null) && (item.AssignedToUserId == ViewBag.UserId.Id))
+                                        {
+
+                                            <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })">Edit  |</a>
+
+                                            <a href="@Url.Action("Details", "Tickets", new { id = item.Id })">Details</a>
+
+                                            @*if (User.IsInRole(" Admin"))
+                                            {
+                                                @: |
+                                                <a href="@Url.Action("Delete", "Tickets", new { id = item.Id })">Delete</a>
+                                            }*@
+
+                                        }
+                                        else
+                                        {
+
                                             @Html.ActionLink("Details", "Details", new { id = item.Id })
-                                        </td>
-                                    }
+
+                                        }
+                                    </td>
 
                                 </tr>
 
@@ -119,9 +139,7 @@
                     </table>
 
 
-                    <p>
-                        @Html.ActionLink("Back to List", "Index")
-                    </p>
+
                 </div>
             </div>
         </div>

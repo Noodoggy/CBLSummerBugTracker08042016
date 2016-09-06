@@ -90,16 +90,18 @@
                                         @Html.DisplayFor(modelItem => item.AssignedToUser.DisplayName)
                                     </td>*@
                                     <td>
+@if (ViewBag.UserId.Id == item.AssignedToUserId || ViewBag.UserId.Id == item.OwnerUserId || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+{
+                                        <a href="@Url.Action("Edit", "Tickets", new { id = item.Id })">Edit  |</a>
 
-                                        <a>@Url.Action("Edit", "Tickets", new { id = item.Id })Edit  |</a>
-
-                                        <a>@Url.Action("Details", "Tickets", new { id = item.Id })Details</a>
-
-                                        @if (User.IsInRole("Admin"))
+                                        <a href="@Url.Action("Details", "Tickets", new { id = item.Id })">Details</a>
+}
+                                        @if (User.IsInRole(" Admin"))
                                         {
-                                            @: |
-                                            <a>@Url.Action("Delete", "Tickets", new { id = item.Id })Delete</a>
+                                        @: |
+                                        <a href="@Url.Action("Delete", "Tickets", new { id = item.Id })">Delete</a>
                                         }
+
                                     </td>
                                 </tr>
                             }

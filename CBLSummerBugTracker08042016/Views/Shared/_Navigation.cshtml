@@ -14,7 +14,7 @@
                 <div class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">
 
-                        @if (User.IsInRole("Submitter") && (!User.IsInRole("Developer") && !User.IsInRole("Project Manager")))
+                        @if (User.IsInRole("Submitter") && (!User.IsInRole("Developer") && !User.IsInRole("Project Manager") && !User.IsInRole("Admin")))
                         { <small class="text-muted">Submitter <b class="caret"></b></small> }
                         else if (User.IsInRole("Developer") && !User.IsInRole("Project Manager"))
                         { <small class="text-muted">Developer <b class="caret"></b></small> }
@@ -28,14 +28,13 @@
                         <li><a href="@Url.Action("Index", "Manage")">Manage Account</a></li>
                     </ul>
                 </div>
-                <div id="sparkline1" class="small-chart m-t-sm"></div>
+                @*<div id="sparkline1" class="small-chart m-t-sm"></div>
                 <div>
                     <h4 class="font-extra-bold m-b-xs">
-                        @*@{ var userId = User.Identity.ToString();             //trying to access current users projects
-                            helper.ListUserProjects(userId).SelectMany(p => p.User = userId}    //to get their tickets per project count*@
+                        
                     </h4>
                     <small class="text-muted">Number of Tickets Assigned Per Project</small>
-                </div>
+                </div>*@
             </div>
         </div>
 
@@ -69,7 +68,7 @@
             @if (User.IsInRole("Admin"))
             {
                 <li class="@Html.IsSelected(controller: "Admin")">
-                    <a href="@Url.Action("Index", "Admin")"> <span class="nav-label">Admin</span> <span class="label label-success pull-right"></span> </a>
+                    <a href="@Url.Action("RoleManagement", "Admin")"> <span class="nav-label">Role Managemnt</span> <span class="label label-success pull-right"></span> </a>
                 </li>
             }
 
